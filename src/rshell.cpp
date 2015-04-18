@@ -9,9 +9,6 @@
 #include <string>
 #include <boost/tokenizer.hpp>
 
-
-
-
 using namespace std;
 using namespace boost;
 
@@ -25,8 +22,21 @@ int main()
 	{
 		string input_cmd;
 		
-		cout << getlogin() << "@" << hostname << " $ ";
-		getline(cin, input_cmd);	
+		//FIXME: Doesn't output after fg
+		//	
+		//outputs user login and host name along with command prompt
+		cout << getlogin() << "@" << hostname << "$ ";
+
+		//takes in commands
+		getline(cin, input_cmd);
+
+		
+
+		//if exit entered, exit shell
+		if(input_cmd == "exit")
+		{
+			break;
+		}	
 	}
 	
 
