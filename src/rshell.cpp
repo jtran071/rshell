@@ -53,7 +53,8 @@ int main()
 		vector<char*> arg(cmd_line.size() + 2);
 		//FIXME: since tokenizer ignores whitespace, 
 		//arg does not have enough size
-		
+		string exit_flag = parse_list.front();
+	
 		while(!(parse_list.empty()))
 		{
 			cmd_line.push_back(parse_list.front());
@@ -65,9 +66,10 @@ int main()
 			arg[i] = &cmd_line[i][0];
 		}
 
-			
+		//make it so that anything after exit will still exit
+		//
 		//if exit entered, exit shell
-		if(input_cmd == "exit")
+		if(exit_flag == "exit")
 		{
 			exit(0);
 		}	
