@@ -50,9 +50,8 @@ int main()
 		}
 	
 		vector<string> cmd_line;
-		vector<char*> arg(cmd_line.size() + 2);
-		//FIXME: since tokenizer ignores whitespace, 
-		//arg does not have enough size
+		vector<char*> arg(parse_list.size() + 1);
+		
 		string exit_flag = parse_list.front();
 	
 		while(!(parse_list.empty()))
