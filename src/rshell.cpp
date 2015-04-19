@@ -39,12 +39,49 @@ int main()
 		{
 			parse_list.push_back(*it);
 		}
+	
+		vector<string> cmd_line;
+		vector<char*> arg;
+	
+		for(unsigned int i = 0; i < cmd_line.size(); ++i)	
+		{
+			arg[i] = &cmd_line[i][0];
+		}
+			
+		//TODO: CHECK FOR COMMENTS # 
+		//DO FORK AND EXEC
+		//CONNECTORS		
 		
-
+		int pid = fork();
+		//error with fork
+		if(pid < 0)
+		{
+			perror("fork().");
+			exit(1);
+		}
+		//child process
+		else if(pid == 0)
+		{
+			if(-1 == execvp(arg[0], arg.data()))//insert arg
+			{
+				perror("execvp().");
+				_exit(1);
+			}
+		}
+		//parent process
+		else if(pid > 0)
+		{
+			if(-1 == wait(0))
+			{
+				perror("wait().");
+				exit(1);
+			}
+		
+		}
 		//if exit entered, exit shell
 		if(input_cmd == "exit")
 		{
-			break;
+			exit(0);
 		}	
 	}
 	
