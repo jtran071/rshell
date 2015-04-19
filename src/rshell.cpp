@@ -14,18 +14,27 @@ using namespace std;
 using namespace boost;
 
 
+
+
+
+
 int main()
 {
 	char hostname[256];
 	gethostname(hostname, 256);
-
+	if(gethostname(hostname, 256) == -1)
+	{
+		perror("hostname()");
+	}
+	if(getlogin() == NULL)
+	{
+		perror("getlogin()");
+	}
 	while(1)
 	{
 		string input_cmd;
 		list<string> parse_list;
 		
-		//FIXME: Doesn't output after fg, error check if host/user dne
-		//	
 		//outputs user login and host name along with command prompt
 		cout << getlogin() << "@" << hostname << "$ ";
 
@@ -41,22 +50,37 @@ int main()
 		}
 	
 		vector<string> cmd_line;
-		vector<char*> arg;
-	
-		for(unsigned int i = 0; i < cmd_line.size(); ++i)	
+		vector<char*> arg(cmd_line.size() + 2);
+		//FIXME: since tokenizer ignores whitespace, 
+		//arg does not have enough size
+		
+		while(!(parse_list.empty()))
+		{
+			cmd_line.push_back(parse_list.front());
+			parse_list.pop_front();
+		}
+      
+		for(unsigned int i = 0; i != cmd_line.size(); ++i)  
 		{
 			arg[i] = &cmd_line[i][0];
 		}
+
 			
+		//if exit entered, exit shell
+		if(input_cmd == "exit")
+		{
+			exit(0);
+		}	
+		
+
 		//TODO: CHECK FOR COMMENTS # 
-		//DO FORK AND EXEC
 		//CONNECTORS		
 		
 		int pid = fork();
 		//error with fork
 		if(pid < 0)
 		{
-			perror("fork().");
+			perror("fork()");
 			exit(1);
 		}
 		//child process
@@ -64,27 +88,25 @@ int main()
 		{
 			if(-1 == execvp(arg[0], arg.data()))//insert arg
 			{
-				perror("execvp().");
+				perror("execvp()");
 				_exit(1);
 			}
+			_exit(0);
 		}
 		//parent process
 		else if(pid > 0)
 		{
 			if(-1 == wait(0))
 			{
-				perror("wait().");
+				perror("wait()");
 				exit(1);
 			}
 		
 		}
-		//if exit entered, exit shell
-		if(input_cmd == "exit")
-		{
-			exit(0);
-		}	
+		
+		//arg.clear();
+
 	}
-	
 
 	return 0;
 }
