@@ -15,6 +15,41 @@ using namespace boost;
 
 
 
+bool do_exec(vector<char*> &arg)
+{
+	int status;
+	int pid = fork();
+	//error with fork
+	if(pid < 0)
+	{
+		perror("fork()");
+		exit(1);
+	}
+	//child process
+	else if(pid == 0)
+	{
+		if(-1 == execvp(arg[0], arg.data()))//insert arg
+		{
+			perror("execvp()");
+			_exit(1);
+		}
+		_exit(0);
+	}
+	//parent process
+	else if(pid > 0)
+	{
+		if(-1 == wait(&status))
+		{
+			perror("wait()");
+			exit(1);
+		}
+		if(0 != status)
+		{
+			return false;
+		}
+	}
+	return true;
+}
 
 
 
@@ -34,7 +69,10 @@ int main()
 	{
 		string input_cmd;
 		list<string> parse_list;
-		
+		bool conn_semi_c = false;
+		bool conn_and = false;
+		bool conn_or = false;
+
 		//outputs user login and host name along with command prompt
 		cout << getlogin() << "@" << hostname << "$ ";
 
@@ -51,7 +89,8 @@ int main()
 			
 		vector<string> cmd_line;
 		vector<char*> arg(parse_list.size() + 1);
-		
+		list<string> cmd_list;
+
 		string exit_flag = parse_list.front();
 		
 		//push only the commands, saving connectors in list
@@ -60,6 +99,7 @@ int main()
 				parse_list.front() != "|")
 		{
 			cmd_line.push_back(parse_list.front());
+			cmd_list.push_back(parse_list.front());
 			parse_list.pop_front();
 		}
 		
@@ -78,7 +118,7 @@ int main()
 		}	
 		
 
-		//TODO: CHECK FOR COMMENTS # 
+		//TODO: 
 		//CONNECTORS		
 		
 		//create loop to check for connectors and subsequent arg
@@ -87,44 +127,56 @@ int main()
 		//do connector
 		//
 		
-		while(!(cmd_line.empty()))
+		while(!(cmd_list.empty()))
 		{
 			if(parse_list.front() == "#")
 			{
-				cmd_line.clear();
+				cmd_list.clear();
+			}
+			else if(parse_list.front() == ";")
+			{
+				conn_semi_c = true;
+				parse_list.pop_front();
+				cmd_list.pop_front();
+			}
+			else if(parse_list.front() == "&")
+			{
+				parse_list.pop_front();
+				if(parse_list.front() == "&")
+				{
+					conn_and = true;
+					parse_list.pop_front();
+					cmd_list.pop_front();
+				}
+				else{
+					conn_and = false;
+				}
+			}
+			else if(parse_list.front() == "|")
+			{
+				parse_list.pop_front();
+				if(parse_list.front() == "|")
+				{
+					conn_or = true;
+					parse_list.pop_front();
+					cmd_list.pop_front();
+				}
+				else{
+					conn_or = false;
+				}
 			}
 			else{
-				cmd_line.clear();
+				cmd_list.clear();
 			}
-			int pid = fork();
-			//error with fork
-			if(pid < 0)
+			
+			if(conn_and || conn_semi_c || conn_or)
 			{
-				perror("fork()");
-				exit(1);
+				cout << "yes" << endl;
 			}
-			//child process
-			else if(pid == 0)
-			{
-				if(-1 == execvp(arg[0], arg.data()))//insert arg
-				{
-					perror("execvp()");
-					_exit(1);
-				}
-				_exit(0);
-			}
-			//parent process
-			else if(pid > 0)
-			{
-				if(-1 == wait(0))
-				{
-					perror("wait()");
-					exit(1);
-				}
-		
-			}
-		}
-		
+			
+
+
+		}		
 
 	}
 
