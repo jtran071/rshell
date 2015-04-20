@@ -13,6 +13,39 @@
 using namespace std;
 using namespace boost;
 
+//
+//void do_exec(vector<char*> &arg)
+//{
+//	int status;
+//	int pid = fork();
+//	//error with fork
+//	if(pid < 0)
+//	{
+//		perror("fork()");
+//		exit(1);
+//	}
+//	//child process
+//	else if(pid == 0)
+//	{
+//		if(-1 == execvp(arg[0], arg.data()))//insert arg
+//		{
+//			perror("execvp()");
+//			_exit(1);
+//		}
+//		_exit(0);
+//	}
+//	//parent process
+//	else if(pid > 0)
+//	{
+//		if(-1 == wait(&status))
+//		{
+//			perror("wait()");
+//			exit(1);
+//		}
+//	}
+//}
+
+
 
 
 bool do_exec(vector<char*> &arg)
@@ -43,7 +76,7 @@ bool do_exec(vector<char*> &arg)
 			perror("wait()");
 			exit(1);
 		}
-		if(0 != status)
+		if(status != 0)
 		{
 			return false;
 		}
@@ -72,6 +105,8 @@ int main()
 		bool conn_semi_c = false;
 		bool conn_and = false;
 		bool conn_or = false;
+		bool exec_check = false;
+
 
 		//outputs user login and host name along with command prompt
 		cout << getlogin() << "@" << hostname << "$ ";
@@ -86,7 +121,9 @@ int main()
 		{
 			parse_list.push_back(*it);
 		}
-			
+	
+		
+				
 		vector<string> cmd_line;
 		vector<char*> arg(parse_list.size() + 1);
 		list<string> cmd_list;
@@ -104,10 +141,10 @@ int main()
 		}
 		
 		
-		for(unsigned int i = 0; i != cmd_line.size(); ++i)  
-		{
-			arg[i] = &cmd_line[i][0];
-		}
+		//for(unsigned int i = 0; i != cmd_line.size(); ++i)  
+		//{
+		//	arg[i] = &cmd_line[i][0];
+		//}
 
 		//make it so that anything after exit will still exit
 		//
@@ -118,26 +155,26 @@ int main()
 		}	
 		
 
-		//TODO: 
-		//CONNECTORS		
-		
-		//create loop to check for connectors and subsequent arg
-		//use a list to check connectors
-		//check whether the command succeeded or failed
-		//do connector
-		//
 		
 		while(!(cmd_list.empty()))
 		{
+			
+			for(unsigned int i = 0; i != cmd_line.size(); ++i)  
+			{
+				arg[i] = &cmd_line[i][0];
+			}
+
+
 			if(parse_list.front() == "#")
 			{
 				cmd_list.clear();
+				do_exec(arg);
 			}
 			else if(parse_list.front() == ";")
 			{
 				conn_semi_c = true;
 				parse_list.pop_front();
-				cmd_list.pop_front();
+				//cmd_list.pop_front();
 			}
 			else if(parse_list.front() == "&")
 			{
@@ -146,7 +183,7 @@ int main()
 				{
 					conn_and = true;
 					parse_list.pop_front();
-					cmd_list.pop_front();
+					//cmd_list.pop_front();
 				}
 				else{
 					conn_and = false;
@@ -159,23 +196,36 @@ int main()
 				{
 					conn_or = true;
 					parse_list.pop_front();
-					cmd_list.pop_front();
+					//cmd_list.pop_front();
 				}
 				else{
 					conn_or = false;
 				}
 			}
 			else{
-				cmd_list.clear();
+				//cmd_list.clear();
+				do_exec(arg);
+				cmd_list.pop_front();
+				break;
 			}
 			
-			if(conn_and || conn_semi_c || conn_or)
+
+			if(conn_semi_c == true)
 			{
-				cout << "yes" << endl;
+				exec_check = do_exec(arg);
+				cmd_list.pop_front();
 			}
+			else if(conn_and == true && exec_check == true)
+			{
+				exec_check = do_exec(arg);
+				cmd_list.pop_front();
+			}
+			else if(conn_or == true && exec_check == false)
+			{
+				exec_check = do_exec(arg);
+				cmd_list.pop_front();
+			}	
 			
-
-
 		}		
 
 	}
