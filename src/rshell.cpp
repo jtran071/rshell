@@ -13,37 +13,6 @@
 using namespace std;
 using namespace boost;
 
-//
-//void do_exec(vector<char*> &arg)
-//{
-//	int status;
-//	int pid = fork();
-//	//error with fork
-//	if(pid < 0)
-//	{
-//		perror("fork()");
-//		exit(1);
-//	}
-//	//child process
-//	else if(pid == 0)
-//	{
-//		if(-1 == execvp(arg[0], arg.data()))//insert arg
-//		{
-//			perror("execvp()");
-//			_exit(1);
-//		}
-//		_exit(0);
-//	}
-//	//parent process
-//	else if(pid > 0)
-//	{
-//		if(-1 == wait(&status))
-//		{
-//			perror("wait()");
-//			exit(1);
-//		}
-//	}
-//}
 
 
 
@@ -71,9 +40,9 @@ bool do_exec(vector<char*> &arg)
 	//parent process
 	else if(pid > 0)
 	{
-		if(-1 == wait(&status))
+		if(-1 == waitpid(-1, &status, 0))
 		{
-			perror("wait()");
+			perror("waitpid()");
 			exit(1);
 		}
 		if(status != 0)
@@ -115,14 +84,13 @@ int main()
 		getline(cin, input_cmd);
 		
 		//parse command input
-		char_separator<char> delim(" \t", "#;&|");
+		char_separator<char> delim(" \t","#;&|");
 		tokenizer< char_separator<char> > mytok(input_cmd, delim);
 		for(auto it = mytok.begin(); it != mytok.end(); ++it)
 		{
 			parse_list.push_back(*it);
 		}
 	
-		
 				
 		vector<string> cmd_line;
 		vector<char*> arg(parse_list.size() + 1);
@@ -140,12 +108,13 @@ int main()
 			parse_list.pop_front();
 		}
 		
+		for(unsigned int i = 0; i != cmd_line.size(); ++i)  
+		{
+			arg[i] = &cmd_line[i][0];
+		}
 		
-		//for(unsigned int i = 0; i != cmd_line.size(); ++i)  
-		//{
-		//	arg[i] = &cmd_line[i][0];
-		//}
-
+		
+		
 		//make it so that anything after exit will still exit
 		//
 		//if exit entered, exit shell
@@ -159,22 +128,15 @@ int main()
 		while(!(cmd_list.empty()))
 		{
 			
-			for(unsigned int i = 0; i != cmd_line.size(); ++i)  
-			{
-				arg[i] = &cmd_line[i][0];
-			}
-
-
 			if(parse_list.front() == "#")
 			{
 				cmd_list.clear();
-				do_exec(arg);
+				exec_check = do_exec(arg);
 			}
 			else if(parse_list.front() == ";")
 			{
 				conn_semi_c = true;
 				parse_list.pop_front();
-				//cmd_list.pop_front();
 			}
 			else if(parse_list.front() == "&")
 			{
@@ -183,7 +145,6 @@ int main()
 				{
 					conn_and = true;
 					parse_list.pop_front();
-					//cmd_list.pop_front();
 				}
 				else{
 					conn_and = false;
@@ -196,15 +157,13 @@ int main()
 				{
 					conn_or = true;
 					parse_list.pop_front();
-					//cmd_list.pop_front();
 				}
 				else{
 					conn_or = false;
 				}
 			}
 			else{
-				//cmd_list.clear();
-				do_exec(arg);
+				exec_check = do_exec(arg);
 				cmd_list.pop_front();
 				break;
 			}
