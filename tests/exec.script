@@ -1,0 +1,220 @@
+Script started on Sun 19 Apr 2015 11:18:20 PM PDT
+~
+jtran071@hammer $ cs100
+[0;91m
+===============================================================================
+|                                                                             |
+| You have enabled settings specific for cs100.  Everything you do is being   |
+| recorded to measure your progress in the class.                             |
+|                                                                             |
+| Important commands for the class:                                           |
+|   * calcgrade.sh          displays a detailed breakdown of your grade       |
+|   * typespeed             practice typing unix commands                     |
+|                                                                             |
+| Important commands for general C++ programming:                             |
+|   * make                  don't call g++ manually; let make do the work!    |
+|   * gdb                   the GNU debugger                                  |
+|   * valgrind              get rid of your memory leaks                      |
+|   * cppcheck              static analysis tool                              |
+|   * man                   find help about any syscall / terminal command    |
+|                                                                             |
+===============================================================================
+[0m
+[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~[0;95m [0;36m$[0m cd rshell/
+[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~/rshell[0;95m (exec) [0;36m$[0m ls
+LICENSE.md  Makefile  README.md  src  tests
+[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~/rshell[0;95m (exec) [0;36m$[0m make
+mkdir bin
+g++ -Wall -Werror -pedantic -std=c++11 src/rshell.cpp -o bin/rshell
+[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~/rshell[0;95m (exec) [0;36m$[0m i[Kbin/rshell 
+jtran071@hammer.cs.ucr.edu$ #starting test
+jtran071@hammer.cs.ucr.edu$ ls
+bin  LICENSE.md  Makefile  README.md  src  tests
+jtran071@hammer.cs.ucr.edu$ ls -a
+.  ..  bin  .git  LICENSE.md  Makefile	README.md  src	tests
+jtran071@hammer.cs.ucr.edu$ ls -a -l
+total 36
+drwx------  6 jtran071 classes 4096 Apr 19 23:12 .
+drwx------ 11 jtran071 classes 4096 Apr 19 23:12 ..
+drwx------  2 jtran071 classes 4096 Apr 19 23:12 bin
+drwx------  8 jtran071 classes 4096 Apr 19 22:42 .git
+-rw-------  1 jtran071 classes 1472 Apr 18 14:55 LICENSE.md
+-rw-------  1 jtran071 classes  155 Apr 19 02:46 Makefile
+-rw-------  1 jtran071 classes 1040 Apr 19 22:42 README.md
+drwx------  2 jtran071 classes 4096 Apr 19 22:36 src
+drwx------  2 jtran071 classes 4096 Apr 19 23:12 tests
+jtran071@hammer.cs.ucr.edu$ lr s -R
+.:
+bin  LICENSE.md  Makefile  README.md  src  tests
+
+./bin:
+rshell
+
+./src:
+rshell.cpp
+
+./tests:
+exec.script
+jtran071@hammer.cs.ucr.edu$ #ls command with flags work
+jtran071@hammer.cs.ucr.edu$ cd stc  rc
+execvp(): No such file or directory
+jtran071@hammer.cs.ucr.edu$ #cd doesnt wo    'wr  t work
+jtran071@hammer.cs.ucr.edu$ ls #-a -l
+bin  LICENSE.md  Makefile  README.md  src  tests
+jtran071@hammer.cs.ucr.edu$ #ls lsal
+jtran071@hammer.cs.ucr.edu$ #of  comments work
+jtran071@hammer.cs.ucr.edu$ #lets see the other commands
+jtran071@hammer.cs.ucr.edu$ # ps
+  PID TTY          TIME CMD
+ 5059 pts/46   00:00:00 bash
+ 5116 pts/46   00:00:00 rshell
+ 5404 pts/46   00:00:00 ps
+jtran071@hammer.cs.ucr.edu$ tuo  ouch test
+jtran071@hammer.cs.ucr.edu$ ls
+bin  LICENSE.md  Makefile  README.md  src  test  tests
+jtran071@hammer.cs.ucr.edu$ ls -l test
+-rw------- 1 jtran071 classes 0 Apr 19 23:14 test
+jtran071@hammer.cs.ucr.edu$ rm test
+jtran071@hammer.cs.ucr.edu$ ls
+bin  LICENSE.md  Makefile  README.md  src  tests
+jtran071@hammer.cs.ucr.edu$ #other commands working
+jtran071@hammer.cs.ucr.edu$ bin/sr  rshell
+jtran071@hammer.cs.ucr.edu$ ps
+  PID TTY          TIME CMD
+ 5059 pts/46   00:00:00 bash
+ 5116 pts/46   00:00:00 rshell
+ 5646 pts/46   00:00:00 rshell
+ 5655 pts/46   00:00:00 ps
+jtran071@hammer.cs.ucr.edu$ #able to open instance of rshell within rshell
+jtran071@hammer.cs.ucr.edu$ bin/rshell
+jtran071@hammer.cs.ucr.edu$ ps
+  PID TTY          TIME CMD
+ 5059 pts/46   00:00:00 bash
+ 5116 pts/46   00:00:00 rshell
+ 5646 pts/46   00:00:00 rshell
+ 5752 pts/46   00:00:00 rshell
+ 5765 pts/46   00:00:00 ps
+jtran071@hammer.cs.ucr.edu$ exit
+jtran071@hammer.cs.ucr.edu$ ps
+  PID TTY          TIME CMD
+ 5059 pts/46   00:00:00 bash
+ 5116 pts/46   00:00:00 rshell
+ 5646 pts/46   00:00:00 rshell
+ 5785 pts/46   00:00:00 ps
+jtran071@hammer.cs.ucr.edu$ #exit works
+jtran071@hammer.cs.ucr.edu$ exit jdsoadjoawdwua
+jtran071@hammer.cs.ucr.edu$ ps
+  PID TTY          TIME CMD
+ 5059 pts/46   00:00:00 bash
+ 5116 pts/46   00:00:00 rshell
+ 5809 pts/46   00:00:00 ps
+jtran071@hammer.cs.ucr.edu$ #exit works as long as                        exitjdisoajdowa
+execvp(): No such file or directory
+jtran071@hammer.cs.ucr.edu$ #exit works as long as its the first ar  command
+jtran071@hammer.cs.ucr.edu$ #testing connectors
+jtran071@hammer.cs.ucr.edu$ ls && cat README.md             echo ls  hi
+bin  LICENSE.md  Makefile  README.md  src  tests
+jtran071@hammer.cs.ucr.edu$ echo hi
+hi
+jtran071@hammer.cs.ucr.edu$ ls ||     || echo hi
+execvp(): No such file or directory
+jtran071@hammer.cs.ucr.edu$ e ls;echo hi
+bin  LICENSE.md  Makefile  README.md  src  tests
+jtran071@hammer.cs.ucr.edu$ #connectors are not working prper   operly
+jtran071@hammer.cs.ucr.edu$ #they are being r treated like comments
+jtran071@hammer.cs.ucr.edu$ #lets te        ls &&&&&SAD&&S&D&A&DE&WF&EW&|F|EW|FEW|F|EW|FW|EF; fwe;f;wef;w
+bin  LICENSE.md  Makefile  README.md  src  tests
+jtran071@hammer.cs.ucr.edu$ ls  ls ls
+ls: cannot access ls: No such file or directory
+jtran071@hammer.cs.ucr.edu$ ls sc rc
+rshell.cpp
+jtran071@hammer.cs.ucr.edu$ echo hello
+hello
+jtran071@hammer.cs.ucr.edu$ echo &&&
+
+jtran071@hammer.cs.ucr.edu$ echo ||
+
+jtran071@hammer.cs.ucr.edu$ echo ;&&\\\|*
+
+jtran071@hammer.cs.ucr.edu$ #echo is affec     afe fected by                te reats ;|&                ; lds     echo ; jdosajdoa
+
+jtran071@hammer.cs.ucr.edu$ echo dsoadhoas           test ;djdiosajdao
+test
+test
+jtran071@hammer.cs.ucr.edu$ ec  #ec   echo test ||||djsadjada
+test
+test
+jtran071@hammer.cs.ucr.edu$ echo &&&&dheuidhia
+
+jtran071@hammer.cs.ucr.edu$ #echo treats *|;     &|; as white s  space
+jtran071@hammer.cs.ucr.edu$ #but strand   ge intere ation     c  ction when outputting          an  other char are echo'd
+jtran071@hammer.cs.ucr.edu$ #echoes twice
+jtran071@hammer.cs.ucr.edu$ echo      &&& hfeif
+jtran071@hammer.cs.ucr.edu$ #echo     echo &&&hdeuihi
+
+jtran071@hammer.cs.ucr.edu$ #a treats them as comments as well
+jtran071@hammer.cs.ucr.edu$ ps
+  PID TTY          TIME CMD
+ 5059 pts/46   00:00:00 bash
+ 5116 pts/46   00:00:00 rshell
+ 6792 pts/46   00:00:00 ps
+jtran071@hammer.cs.ucr.edu$ #testing kill
+jtran071@hammer.cs.ucr.edu$ bin/rshell
+jtran071@hammer.cs.ucr.edu$ ps
+  PID TTY          TIME CMD
+ 5059 pts/46   00:00:00 bash
+ 5116 pts/46   00:00:00 rshell
+ 6819 pts/46   00:00:00 rshell
+ 6833 pts/46   00:00:00 ps
+jtran071@hammer.cs.ucr.edu$ kill -9 6819
+jtran071@hammer.cs.ucr.edu$ ps
+  PID TTY          TIME CMD
+ 5059 pts/46   00:00:00 bash
+ 5116 pts/46   00:00:00 rshell
+ 6923 pts/46   00:00:00 ps
+jtran071@hammer.cs.ucr.edu$ #kill works
+jtran071@hammer.cs.ucr.edu$ pwd
+wd/class/classes/jtran071/rshell
+jtran071@hammer.cs.ucr.edu$ #goi   testing more commands
+execvp(): No such file or directory
+jtran071@hammer.cs.ucr.edu$ #testing more commands
+jtran071@hammer.cs.ucr.edu$ #strange        #strange error there
+jtran071@hammer.cs.ucr.edu$ # mkdir     ls
+bin  LICENSE.md  Makefile  README.md  src  tests
+jtran071@hammer.cs.ucr.edu$ mk dir    dir test_dir
+jtran071@hammer.cs.ucr.edu$ ls
+bin  LICENSE.md  Makefile  README.md  src  test_dir  tests
+jtran071@hammer.cs.ucr.edu$ cp test_dir README.md
+cp: omitting directory `test_dir'
+jtran071@hammer.cs.ucr.edu$ ls
+bin  LICENSE.md  Makefile  README.md  src  test_dir  tests
+jtran071@hammer.cs.ucr.edu$ ls test_dir
+jtran071@hammer.cs.ucr.edu$ rmdir test_dir
+jtran071@hammer.cs.ucr.edu$ ls
+bin  LICENSE.md  Makefile  README.md  src  tests
+jtran071@hammer.cs.ucr.edu$ touch re  test
+jtran071@hammer.cs.ucr.edu$ cp Makefile test
+jtran071@hammer.cs.ucr.edu$ cat test
+CFLAGS = -Wall -Werror -pedantic -std=c++11
+
+all: rshell
+
+rshell: bin
+	g++ $(CFLAGS) src/rshell.cpp -o bin/rshell
+  
+bin:
+	mkdir bin
+  
+clean:
+	rm -rf bin
+jtran071@hammer.cs.ucr.edu$ ls
+bin  LICENSE.md  Makefile  README.md  src  test  tests
+jtran071@hammer.cs.ucr.edu$ rm test
+jtran071@hammer.cs.ucr.edu$ exit
+[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~/rshell[0;95m (exec) [0;36m$[0m exit
+exit
+~
+jtran071@hammer $ exit
+exit
+
+Script done on Sun 19 Apr 2015 11:32:11 PM PDT
