@@ -5,10 +5,10 @@ commands through the command line and execute them.
 
 ##How to Install
 
-`$ git clone https://github.com/jtran071/rshell.git`
-`$ cd rshell`
-`$ make`
-`$ bin/rshell`
+n`$ git clone https://github.com/jtran071/rshell.git`
+n`$ cd rshell`
+n`$ make`
+n`$ bin/rshell`
 
 ##Usage
 The command format is: `[command] [flag]`
