@@ -13,6 +13,8 @@
 #include <vector>
 #include <queue>
 #include <iomanip>
+#include <algorithm>
+#include <string>
 
 using namespace std;
 
@@ -88,9 +90,26 @@ void get_usrgrp(struct stat &info, string& usr, string& grp)
 	grp = gp->gr_name;
 }
 
+int calc_total_block(vector<string>& v_files, string& path_curr)
+{	
+	int total = 0;
+	for(int i = 0; i < v_files.size(); ++i)
+	{
+		struct stat info;
+		if(-1 == stat((path_curr + "/" + (v_files[i])).c_str(), &info))
+		{
+			perror("stat()");
+		}
+		total += info.st_blocks;
+	}
+	return total/2;
+}
 
 void print_long(vector<string>& v_files, string& path_curr)
 {
+	int total = calc_total_block(v_files, path_curr);
+	cout << "total " << total << endl;
+
 	for(int i = 0; i < v_files.size(); ++i)
 	{
 		struct stat info;
@@ -106,12 +125,36 @@ void print_long(vector<string>& v_files, string& path_curr)
 
 		get_perm(info,perm);
 		get_usrgrp(info,usr,grp);
+		
+		string time = ctime(&info.st_mtime);
+		time = time.substr(4,time.length() - 13);
 
-		cout << perm << " " << info.st_nlink << " " << usr << " " << grp << " "; 
-		cout << setw(6) << left << info.st_size << " " << info.st_mtime << " ";
-		cout << right <<v_files[i] << endl;
+		cout << right;
+		cout << perm << " ";
+		cout << right;
+		cout << setw(2) << info.st_nlink << " ";
+		cout << left;
+		cout << setw(3) << usr << " ";
+		cout << left;
+		cout << setw(3) <<  grp << " ";
+		cout << right;
+		cout << setw(4) << info.st_size << " ";
+		cout << right;
+		cout << setw(6) <<  time << " ";
+		cout << left;
+		cout << setw(3) << v_files[i] << endl;
 	}
+
 }
+
+bool ignore_case(const string &x, const string &y)
+{
+	if(tolower(x[0]) < tolower(y[0])) return true;
+	else if (tolower(x[0]) > tolower(y[0])) return false;
+
+	return x < y;
+}
+
 
 
 int main(int argc, char* argv[])
@@ -154,15 +197,26 @@ int main(int argc, char* argv[])
 				{
 					continue;
 				}
-				cout << files->d_name << " ";
 				v_files.push_back(files->d_name);
-				if(flag_l)
-				{
-					print_long(v_files, path_curr);
-				}
 			
 			}
 			
+			//alphabetize
+			sort(v_files.begin(), v_files.end(), ignore_case);
+			
+			if(!flag_l)
+			{
+				for(vector<string>::iterator it = v_files.begin(); it != v_files.end(); ++it)
+				{
+					cout << *it << " ";
+				}
+			}
+
+			if(flag_l)
+			{
+				print_long(v_files, path_curr);
+			}
+
 			q_dirs.pop();
 
 			if(errno != 0)
