@@ -15,8 +15,8 @@
 
 using namespace std;
 
-void parse_flags(const int argc, char* argv[], bool flag_a,
-	bool flag_l, bool flag_R, queue<string> &q_dirs)
+void parse_flags(const int argc, char* argv[], bool& flag_a,
+	bool& flag_l, bool& flag_R, queue<string> &q_dirs)
 {
 	unsigned count = argc;
 	for(int i = count - 1; i != 0; --i)
@@ -57,7 +57,7 @@ void parse_flags(const int argc, char* argv[], bool flag_a,
 
 int main(int argc, char* argv[])
 {
-	if(argc <= 1)
+	if(argc < 1)
 	{
 		cout << "Error: No arguments passed in." << endl;
 		exit(1);
@@ -71,7 +71,11 @@ int main(int argc, char* argv[])
 		queue<string> q_dirs;
 		
 		parse_flags(argc, argv, flag_a, flag_l, flag_R, q_dirs);
-		
+	
+		//lets ls check cwd without having to pass .	
+		if(q_dirs.empty()) q_dirs.push(".");
+
+
 		while(!q_dirs.empty())
 		{
 			DIR *dirp;
@@ -84,6 +88,10 @@ int main(int argc, char* argv[])
 			errno = 0;
 			while(NULL != (files = readdir(dirp)))
 			{
+				if(files->d_name[0] == '.' && flag_a == false)
+				{
+					continue;
+				}
 				cout << files->d_name << " ";
 			}
 			
