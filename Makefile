@@ -1,10 +1,16 @@
 CFLAGS = -Wall -Werror -pedantic -std=c++11
 
-all: rshell
+all: rshell ls cp
 
 rshell: bin
 	g++ $(CFLAGS) src/rshell.cpp -o bin/rshell
-  
+
+cp: bin
+	g++ $(CFLAGS) src/cp.cpp -o bin/cp
+ 
+ls: bin
+	g++ $(CLAGS) src/ls.cpp -o bin/ls
+ 
 bin:
 	mkdir bin
   
