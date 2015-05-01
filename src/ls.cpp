@@ -1,0 +1,85 @@
+#include <iostream>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <errno.h>
+#include <stdio.h>
+#include <dirent.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <pwd.h>
+#include <grp.h>
+#include <string.h>
+
+using namespace std;
+
+void parse_flags(const int argc, char* argv[], bool flag_a,
+	bool flag_l, bool flag_R)
+{
+	unsigned count = argc;
+	for(int i = count - 1; i != 0; --i)
+	{
+		if(argv[i][0] == '-')
+		{
+			if (argv[i][1] == 'a')
+			{
+				flag_a = true;
+				cout << "yes flag a" << endl;
+			}
+			else if(argv[i][1] == 'l')
+			{
+				flag_l = true;
+				cout << "yes flag l" << endl;
+			}
+			else if(argv[i][1] == 'R')
+			{
+				flag_R = true;
+				cout << "yes flag R" << endl;
+			}
+		}
+	}
+}
+
+
+int main(int argc, char* argv[])
+{
+	if(argc <= 1)
+	{
+		cout << "Error: No arguments passed in." << endl;
+		exit(1);
+	}
+	else
+	{
+		bool flag_a = false;
+		bool flag_l = false;
+		bool flag_R = false;
+		
+		parse_flags(argc, argv, flag_a, flag_l, flag_R);
+
+		DIR *dirp;
+		if(NULL == (dirp = opendir(argv[2])))
+		{
+			perror("opendir()");
+			exit(1);
+		}
+		struct dirent *files;
+		errno = 0;
+		while(NULL != (files = readdir(dirp)))
+		{
+			cout << files->d_name << " ";
+		}
+		if(errno != 0)
+		{
+			perror("readdir()");
+			exit(1);
+		}
+		cout << endl;
+		if(-1 == closedir(dirp))
+		{
+			perror("closedir()");
+			exit(1);
+		}
+	}
+	return 0;
+
+}
