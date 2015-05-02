@@ -68,7 +68,8 @@ first.
 
 ##Known Issues and Bugs with `ls`
 Currently, the `-R` flag is not functioning properly. When you run it,
-you will get error saying that the file or directory does not exist.
+you will get error saying that the file or directory does not exist. It
+may also have a segmentation fault.
 The display may not output as neat as it should if long file names or
 large numbers are displayed. When taking flags, it does not output an error
 when a flag does not exist, it will simply do regular ls. Also if a working 
