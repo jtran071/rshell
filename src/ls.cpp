@@ -16,6 +16,12 @@
 #include <algorithm>
 #include <string>
 
+
+#define blue "\033[1;34m"
+#define green "\033[1;32m"
+#define gray "\033[;40m"
+#define no_c "\033[m"
+
 using namespace std;
 
 void parse_flags(const int argc, char* argv[], bool& flag_a,
@@ -116,7 +122,7 @@ void print_long(vector<string>& v_files, string& path_curr)
 		if(-1 == stat((path_curr + "/" + (v_files[i])).c_str(), &info))
 		{
 			perror("stat()");
-			exit(1);
+			//exit(1);
 		}
 	
 		string perm = "----------";
@@ -140,10 +146,40 @@ void print_long(vector<string>& v_files, string& path_curr)
 		cout << right;
 		cout << setw(4) << info.st_size << " ";
 		cout << right;
-		cout << setw(6) <<  time << " ";
+		cout << setw(10) <<  time << " ";
 		cout << left;
-		cout << setw(3) << v_files[i] << endl;
-	}
+		
+		if(v_files[i][0] == '.')
+		{
+			if(S_ISDIR(info.st_mode))
+			{
+				cout << gray << blue << setw(3) << v_files[i] << no_c << endl;
+			}
+			else if((S_IXUSR & info.st_mode) || (S_IXGRP & info.st_mode) || 
+				(S_IXOTH & info.st_mode))
+			{
+				cout << gray << green << setw(3) << v_files[i] << no_c << endl;
+			}
+			else
+			{
+				cout << gray << setw(3) << v_files[i] << no_c << endl;
+			}
+		}
+		else if(S_ISDIR(info.st_mode))
+		{
+			cout << blue << setw(3) << v_files[i] << no_c << endl;
+		}
+		else if((S_IXUSR & info.st_mode) || (S_IXGRP & info.st_mode) || 
+			(S_IXOTH & info.st_mode))
+		{
+			cout << green << setw(3) << v_files[i] << no_c << endl;
+		}
+		else
+		{
+			cout << setw(3) << v_files[i] << no_c << endl;
+		}
+
+	}	
 
 }
 
@@ -159,19 +195,23 @@ void do_recursive(queue<string> &q_dirs, vector<string> &v_files, string &path_c
 {
 	if(!v_files.empty())
 	{
-		for(int i = v_files.size() - 1; i != 0; --i)
+		for(unsigned i = 0; i < v_files.size(); ++i) 
 		{
 			struct stat info;
-			if(-1 == stat((path_curr + "/" + (v_files[i])).c_str(), &info))
+			if(-1 == stat((path_curr + "/" + v_files[i]).c_str(), &info))
 			{
 				perror("stat()");
-				exit(1);
+				//exit(1);
 			}
 		
-			if(info.st_mode & S_IFDIR)
+			if(S_ISDIR(info.st_mode)) //&& !((v_files[i][0] == '\0' ))))
 			{
 				q_dirs.push(path_curr + "/" + v_files[i]);
 			}
+			//else
+			//{
+				//q_dirs.push(path_curr + v_files[i]);
+			//}
 		}
 	}
 }
@@ -223,7 +263,11 @@ int main(int argc, char* argv[])
 			
 			//alphabetize
 			sort(v_files.begin(), v_files.end(), ignore_case);
-			
+
+
+
+			q_dirs.pop();
+
 			if(flag_R)
 			{
 				cout << path_curr << ":" << endl;
@@ -232,19 +276,61 @@ int main(int argc, char* argv[])
 			
 			if(!flag_l)
 			{
-				for(vector<string>::iterator it = v_files.begin(); it != v_files.end(); ++it)
+				
+				
+				for(int i =0; i < v_files.size(); ++i)
 				{
-					cout << *it << " ";
+					struct stat for_color;
+					if(-1 == stat((path_curr+"/"+(v_files[i])).c_str(), &for_color))
+					{
+						perror("stat()");
+					}
+
+					if(v_files[i][0] == '.')
+					{
+						if(S_ISDIR(for_color.st_mode))
+						{
+							cout << gray << blue << v_files[i] << no_c << " ";
+						}
+						else if((S_IXUSR & for_color.st_mode) || (S_IXGRP & for_color.st_mode) || 
+							(S_IXOTH & for_color.st_mode))
+						{
+							cout << gray << green << v_files[i] << no_c << " ";
+						}
+						else
+						{
+							cout << gray << v_files[i] << no_c << endl;
+						}
+					}
+					else if(S_ISDIR(for_color.st_mode))
+					{
+						cout << blue << v_files[i] << no_c << " ";
+					}
+					else if((S_IXUSR & for_color.st_mode) || (S_IXGRP & for_color.st_mode) || 
+						(S_IXOTH & for_color.st_mode))
+					{
+						cout << green << v_files[i] << no_c << " ";
+					}
+					else
+					{
+						cout << v_files[i] << " ";
+					}
+				
+				
+				}
+
+				if(flag_R)
+				{
+					if(!q_dirs.empty()) cout << endl;
 				}
 			}
-			
 
 			if(flag_l)
 			{
 				print_long(v_files, path_curr);
 			}
 
-			q_dirs.pop();
+			//q_dirs.pop();
 
 			if(errno != 0)
 			{
@@ -260,5 +346,5 @@ int main(int argc, char* argv[])
 		}
 	}	
 	return 0;
-
+	
 }
