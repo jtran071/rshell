@@ -155,6 +155,26 @@ bool ignore_case(const string &x, const string &y)
 	return x < y;
 }
 
+void do_recursive(queue<string> &q_dirs, vector<string> &v_files, string &path_curr)
+{
+	if(!v_files.empty())
+	{
+		for(int i = v_files.size() - 1; i != 0; --i)
+		{
+			struct stat info;
+			if(-1 == stat((path_curr + "/" + (v_files[i])).c_str(), &info))
+			{
+				perror("stat()");
+				exit(1);
+			}
+		
+			if(info.st_mode & S_IFDIR)
+			{
+				q_dirs.push(path_curr + "/" + v_files[i]);
+			}
+		}
+	}
+}
 
 
 int main(int argc, char* argv[])
@@ -204,6 +224,12 @@ int main(int argc, char* argv[])
 			//alphabetize
 			sort(v_files.begin(), v_files.end(), ignore_case);
 			
+			if(flag_R)
+			{
+				cout << path_curr << ":" << endl;
+				do_recursive(q_dirs, v_files, path_curr);
+			}
+			
 			if(!flag_l)
 			{
 				for(vector<string>::iterator it = v_files.begin(); it != v_files.end(); ++it)
@@ -211,6 +237,7 @@ int main(int argc, char* argv[])
 					cout << *it << " ";
 				}
 			}
+			
 
 			if(flag_l)
 			{
