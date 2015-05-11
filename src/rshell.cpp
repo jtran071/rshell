@@ -14,9 +14,6 @@ using namespace std;
 using namespace boost;
 
 
-
-
-
 bool do_exec(vector<char*> &arg)
 {
 	int status;
@@ -58,12 +55,14 @@ bool do_exec(vector<char*> &arg)
 int main()
 {
 	char hostname[256];
-	gethostname(hostname, 256);
+	char *login_info;
 	if(gethostname(hostname, 256) == -1)
 	{
 		perror("hostname()");
 	}
-	if(getlogin() == NULL)
+
+	login_info = getlogin();
+	if(login_info == NULL)
 	{
 		perror("getlogin()");
 	}
@@ -78,8 +77,8 @@ int main()
 
 
 		//outputs user login and host name along with command prompt
-		cout << getlogin() << "@" << hostname << "$ ";
-
+		cout << login_info << "@" << hostname << "$ ";
+		
 		//takes in commands
 		getline(cin, input_cmd);
 		
@@ -148,6 +147,8 @@ int main()
 				}
 				else{
 					conn_and = false;
+					cout << "Error: Invalid connector." << endl;
+					break;
 				}
 			}
 			else if(parse_list.front() == "|")
@@ -160,6 +161,8 @@ int main()
 				}
 				else{
 					conn_or = false;
+					cout << "Error: Invalid connector." << endl;
+					break;
 				}
 			}
 			else{
@@ -174,12 +177,12 @@ int main()
 				exec_check = do_exec(arg);
 				cmd_list.pop_front();
 			}
-			else if(conn_and == true && exec_check == true)
+			if(conn_and == true && exec_check == true)
 			{
 				exec_check = do_exec(arg);
 				cmd_list.pop_front();
 			}
-			else if(conn_or == true && exec_check == false)
+			if(conn_or == true && exec_check == false)
 			{
 				exec_check = do_exec(arg);
 				cmd_list.pop_front();
