@@ -51,6 +51,11 @@ void parse_flags(const int argc, char* argv[], bool& flag_a,
 				{
 					flag_R = true;
 				}
+				else
+				{
+					cout << "Error: invalid flag" << endl;
+					exit(1);
+				}
 			}
 		}
 		else
@@ -99,7 +104,7 @@ void get_usrgrp(struct stat &info, string& usr, string& grp)
 int calc_total_block(vector<string>& v_files, string& path_curr)
 {	
 	int total = 0;
-	for(int i = 0; i < v_files.size(); ++i)
+	for(unsigned i = 0; i < v_files.size() ; ++i)
 	{
 		struct stat info;
 		if(-1 == stat((path_curr + "/" + (v_files[i])).c_str(), &info))
@@ -116,7 +121,7 @@ void print_long(vector<string>& v_files, string& path_curr)
 	int total = calc_total_block(v_files, path_curr);
 	cout << "total " << total << endl;
 
-	for(int i = 0; i < v_files.size(); ++i)
+	for(unsigned i = 0; i < v_files.size(); ++i)
 	{
 		struct stat info;
 		if(-1 == stat((path_curr + "/" + (v_files[i])).c_str(), &info))
@@ -204,7 +209,7 @@ void do_recursive(queue<string> &q_dirs, vector<string> &v_files, string &path_c
 				//exit(1);
 			}
 		
-			if(S_ISDIR(info.st_mode)) //&& !((v_files[i][0] == '\0' ))))
+			if(S_ISDIR(info.st_mode)) 
 			{
 				q_dirs.push(path_curr + "/" + v_files[i]);
 			}
@@ -278,7 +283,7 @@ int main(int argc, char* argv[])
 			{
 				
 				
-				for(int i =0; i < v_files.size(); ++i)
+				for(unsigned i =0; i < v_files.size(); ++i)
 				{
 					struct stat for_color;
 					if(-1 == stat((path_curr+"/"+(v_files[i])).c_str(), &for_color))
@@ -343,6 +348,7 @@ int main(int argc, char* argv[])
 				perror("closedir()");
 				exit(1);
 			}
+			v_files.clear();
 		}
 	}	
 	return 0;
