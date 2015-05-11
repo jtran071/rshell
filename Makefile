@@ -9,7 +9,7 @@ cp: bin
 	g++ $(CFLAGS) src/cp.cpp -o bin/cp
  
 ls: bin
-	g++ $(CLAGS) src/ls.cpp -o bin/ls
+	g++ $(CFLAGS) src/ls.cpp -o bin/ls
  
 bin:
 	mkdir bin
