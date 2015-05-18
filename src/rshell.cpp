@@ -9,9 +9,242 @@
 #include <string>
 #include <boost/tokenizer.hpp>
 #include <list>
+#include <fcntl.h>
 
 using namespace std;
 using namespace boost;
+
+const int IN_RD = 1;
+const int OUT_RD = 2;
+const int OUT_RDA = 3;
+const int PIPE = 4;
+
+
+void convert_vector(vector< vector<string> > &v, vector<char*> &arg, int i)
+{
+	for(unsigned j = 0; j < v[i].size(); ++j)
+	{
+		arg[j] = &v[i][j][0];
+	}
+}
+
+int out_redir(vector< vector<string> > &v, int i)
+{
+	int flag = 1;
+	unsigned temp = i;
+	int oldfd, newfd;
+
+	if(temp >= v.size())
+	{
+		cout << "Error in syntax" << endl;
+		return -1;
+	}
+	else
+	{
+		string d_file = v[i+1][0];
+		
+		vector<char*> argv(v[i].size() +1);
+		convert_vector(v, argv, i);
+		
+
+		if(-1 == (oldfd = dup(1)))
+		{
+			perror("dup");
+			_exit(1);
+		}
+		if(-1 == (newfd = open(d_file.c_str(), O_WRONLY | O_CREAT | O_TRUNC,
+					S_IRUSR | S_IWUSR)))
+		{
+			perror("open");
+			return flag;
+		}
+		if(-1 == dup2(newfd,1))
+		{
+			perror("dup2");
+			_exit(1);
+		}
+		int	status;
+		int pid = fork();
+		if(-1 == pid)
+		{
+			perror("fork");
+			_exit(1);
+		}
+		else if(0 == pid)
+		{
+			if(-1 == execvp(v[i][0].c_str(), argv.data()))
+			{
+				perror("execvp");
+				_exit(1);
+			}
+		}
+		else if( pid > 0)
+		{
+			if(-1 == waitpid(-1, &status, 0))
+			{
+				perror("waitpid");
+				exit(1);
+			}
+		}
+		if(-1 == dup2(oldfd,1))
+		{
+			perror("dup2");
+			exit(1);
+		}
+		if(-1 == close(newfd))
+		{
+			perror("close");
+			exit(1);
+		}
+	}
+	return flag+1;
+}
+
+int out_append_redir(vector< vector<string> > &v, int i)
+{
+	int flag = 1;
+	unsigned temp = i;
+	int oldfd, newfd;
+
+	if(temp >= v.size())
+	{
+		cout << "Error in syntax" << endl;
+		return -1;
+	}
+	else
+	{
+		string d_file = v[i+1][0];
+		
+		vector<char*> argv(v[i].size() +1);
+		convert_vector(v, argv, i);
+		
+
+		if(-1 == (oldfd = dup(1)))
+		{
+			perror("dup");
+			_exit(1);
+		}
+		if(-1 == (newfd = open(d_file.c_str(), O_WRONLY | O_CREAT | O_APPEND,
+					S_IRUSR | S_IWUSR)))
+		{
+			perror("open");
+			return flag;
+		}
+		if(-1 == dup2(newfd,1))
+		{
+			perror("dup2");
+			_exit(1);
+		}
+		int	status;
+		int pid = fork();
+		if(-1 == pid)
+		{
+			perror("fork");
+			_exit(1);
+		}
+		else if(0 == pid)
+		{
+			if(-1 == execvp(v[i][0].c_str(), argv.data()))
+			{
+				perror("execvp");
+				_exit(1);
+			}
+		}
+		else if( pid > 0)
+		{
+			if(-1 == waitpid(-1, &status, 0))
+			{
+				perror("waitpid");
+				exit(1);
+			}
+		}
+		if(-1 == dup2(oldfd,1))
+		{
+			perror("dup2");
+			exit(1);
+		}
+		if(-1 == close(newfd))
+		{
+			perror("close");
+			exit(1);
+		}
+	}
+	return flag+1;
+}
+
+
+int in_redir(vector< vector<string> > &v, int i)
+{
+	int flag = 1;
+	unsigned temp = i;
+	int oldfd, newfd;
+
+	if(temp >= v.size())
+	{
+		cout << "Error in syntax" << endl;
+		return -1;
+	}
+	else
+	{
+		string d_file = v[i+1][0];
+		
+		vector<char*> argv(v[i].size() +1);
+		convert_vector(v, argv, i);
+		
+
+		if(-1 == (oldfd = dup(0)))
+		{
+			perror("dup");
+			_exit(1);
+		}
+		if(-1 == (newfd = open(d_file.c_str(), O_RDONLY)))
+		{
+			perror("open");
+			return flag;
+		}
+		if(-1 == dup2(newfd,0))
+		{
+			perror("dup2");
+			_exit(1);
+		}
+		int	status;
+		int pid = fork();
+		if(-1 == pid)
+		{
+			perror("fork");
+			_exit(1);
+		}
+		else if(0 == pid)
+		{
+			if(-1 == execvp(v[i][0].c_str(), argv.data()))
+			{
+				perror("execvp");
+				_exit(1);
+			}
+		}
+		else if( pid > 0)
+		{
+			if(-1 == waitpid(-1, &status, 0))
+			{
+				perror("waitpid");
+				exit(1);
+			}
+		}
+		if(-1 == dup2(oldfd,1))
+		{
+			perror("dup2");
+			exit(1);
+		}
+		if(-1 == close(newfd))
+		{
+			perror("close");
+			exit(1);
+		}
+	}
+	return flag+1;
+}
+
+
 
 
 bool do_exec(vector<char*> &arg)
@@ -50,6 +283,153 @@ bool do_exec(vector<char*> &arg)
 	return true;
 }
 
+bool check_connectors(bool status, list<string> &list)
+{
+	if(list.front() == ";")
+	{
+		list.pop_front();
+		return true;
+	}
+	else if(list.front() == "&")
+	{
+		list.pop_front();
+		if(list.front() == "&")
+		{
+			list.pop_front();
+			if(!status) return false;
+			else return true;
+		}
+		else{
+			cout << "Error: Invalid connector." << endl;
+			return false;
+		}
+	}
+	else if(list.front() == "|")
+	{
+		list.pop_front();
+		if(list.front() == "|")
+		{
+			list.pop_front();
+			if(status) return false;
+			else return true;
+		}
+		else{
+			cout << "Error: Invalid connector." << endl;
+			return false;
+		}
+	}
+	else{
+		return false;
+	}
+	
+}
+
+vector< vector<string> > parse_redir(string &str, vector<int> &v)
+{
+	for(unsigned i = 0; i < str.size(); ++i)
+	{
+		if(str[i] == '|')
+		{
+			v.push_back(PIPE);
+		}
+		else if(str[i] == '>')
+		{
+			if(str[i+1] == '>')
+			{
+				++i;
+				v.push_back(OUT_RDA);
+			}
+			else
+			{
+				v.push_back(OUT_RD);
+			}
+		}
+		else if(str[i] == '<')
+		{
+			v.push_back(IN_RD);
+		}
+	}
+
+	vector<string> vtok;
+	char_separator<char> delim("|><");
+	tokenizer< char_separator<char> > mytok(str, delim);
+	for(auto it = mytok.begin(); it != mytok.end(); ++it)
+	{
+		vtok.push_back(*it);
+	}
+	vector< vector<string> > vvtok;
+	vector<string> vtemp;
+	char_separator<char> delim2(" \t");
+	for(unsigned i = 0; i < vtok.size(); ++i)
+	{
+		vtemp.clear();
+		tokenizer< char_separator<char> > mytok2(vtok[i], delim2);
+		for(auto itt = mytok2.begin(); itt != mytok2.end(); ++itt)
+		{
+			vtemp.push_back(*itt);
+		}
+		vvtok.push_back(vtemp);
+	}
+	return vvtok;
+}
+
+void do_redir(vector< vector<string> > &v, vector<int> &u)
+{
+	int curr;
+
+	for(unsigned i = 0; i < v.size(); ++i)
+	{
+		if(i < u.size())
+		{
+			curr = u[i];
+		}
+		else
+		{
+			curr = 0;
+		}
+		if(curr == OUT_RD)
+		{
+			int x =	out_redir(v,i);
+			if(x == -1)
+			{
+				return;
+			}
+			else
+			{
+				i = x + i;
+				continue;
+			}
+		}
+		
+		if(curr == OUT_RDA)
+		{
+			int x =	out_append_redir(v,i);
+			if(x == -1)
+			{
+				return;
+			}
+			else
+			{
+				i = x + i;
+				continue;
+			}
+		}
+
+		if(curr == IN_RD)
+		{
+			int x =	in_redir(v,i);
+			if(x == -1)
+			{
+				return;
+			}
+			else
+			{
+				i = x + i;
+				continue;
+			}
+		}
+	}
+}
 
 
 int main()
@@ -70,10 +450,11 @@ int main()
 	{
 		string input_cmd;
 		list<string> parse_list;
-		bool conn_semi_c = false;
-		bool conn_and = false;
-		bool conn_or = false;
+		//bool conn_semi_c = false;
+		//bool conn_and = false;
+		//bool conn_or = false;
 		bool exec_check = false;
+		bool redir_check = false;
 
 
 		//outputs user login and host name along with command prompt
@@ -82,6 +463,7 @@ int main()
 		//takes in commands
 		getline(cin, input_cmd);
 		
+
 		//parse command input
 		char_separator<char> delim(" \t","#;&|");
 		tokenizer< char_separator<char> > mytok(input_cmd, delim);
@@ -89,29 +471,33 @@ int main()
 		{
 			parse_list.push_back(*it);
 		}
-	
-				
+
+
+		if(input_cmd.find('<') != string::npos)
+		{
+			redir_check = true;
+		}
+		if(input_cmd.find('>') != string::npos)
+		{
+			redir_check = true;
+		}
+		if(input_cmd.find('|') != string::npos)
+		{
+			redir_check = true;
+		}
+
+		vector<int> v_redir;		
 		vector<string> cmd_line;
 		vector<char*> arg(parse_list.size() + 1);
-		list<string> cmd_list;
+		//list<string> cmd_list;
+		//list<string> conn_list;
 
 		string exit_flag = parse_list.front();
 		
-		//push only the commands, saving connectors in list
-		while(!(parse_list.empty()) && parse_list.front() != "#" && 
-				parse_list.front() != ";" && parse_list.front() != "&" && 
-				parse_list.front() != "|")
-		{
-			cmd_line.push_back(parse_list.front());
-			cmd_list.push_back(parse_list.front());
-			parse_list.pop_front();
-		}
+		vector< vector<string> > cmd_vec;
+
 		
-		for(unsigned int i = 0; i != cmd_line.size(); ++i)  
-		{
-			arg[i] = &cmd_line[i][0];
-		}
-		
+		cmd_vec = parse_redir(input_cmd, v_redir);
 		
 		
 		//make it so that anything after exit will still exit
@@ -124,69 +510,56 @@ int main()
 		
 
 		
-		while(!(cmd_list.empty()))
+		while(!(parse_list.empty()))
 		{
 			
 			if(parse_list.front() == "#")
 			{
-				cmd_list.clear();
-				exec_check = do_exec(arg);
-			}
-			else if(parse_list.front() == ";")
-			{
-				conn_semi_c = true;
-				parse_list.pop_front();
-			}
-			else if(parse_list.front() == "&")
-			{
-				parse_list.pop_front();
-				if(parse_list.front() == "&")
-				{
-					conn_and = true;
-					parse_list.pop_front();
-				}
-				else{
-					conn_and = false;
-					cout << "Error: Invalid connector." << endl;
-					break;
-				}
-			}
-			else if(parse_list.front() == "|")
-			{
-				parse_list.pop_front();
-				if(parse_list.front() == "|")
-				{
-					conn_or = true;
-					parse_list.pop_front();
-				}
-				else{
-					conn_or = false;
-					cout << "Error: Invalid connector." << endl;
-					break;
-				}
-			}
-			else{
-				exec_check = do_exec(arg);
-				cmd_list.pop_front();
+				//cmd_list.clear();
+				//exec_check = do_exec(arg);
 				break;
+				
 			}
 			
+			
+			//do_redir(cmd_vec, v_redir);		
+			
+			//push only the commands, saving connectors in list
+			while(!parse_list.empty() && parse_list.front() != "&"
+					&& parse_list.front() != "|" && parse_list.front() != ";"
+					&& parse_list.front() != "#")
+			{
+				cmd_line.push_back(parse_list.front());
+				parse_list.pop_front();
+			}
+			if(cmd_line.size() == 0)
+			{
+				cout << "Error in syntax" << endl;
+				break;
+			}
+			else if(cmd_line.front() == "exit")
+			{
+				exit(0);
+			}
+			else if(redir_check == true)
+			{
+				do_redir(cmd_vec, v_redir);
+			}
+			else{
 
-			if(conn_semi_c == true)
-			{
+				for(unsigned int i = 0; i != cmd_line.size(); ++i)  
+				{
+					arg[i] = &cmd_line[i][0];
+				}
+				
 				exec_check = do_exec(arg);
-				cmd_list.pop_front();
 			}
-			if(conn_and == true && exec_check == true)
+			if(!check_connectors(exec_check, parse_list))
 			{
-				exec_check = do_exec(arg);
-				cmd_list.pop_front();
+				break;
 			}
-			if(conn_or == true && exec_check == false)
-			{
-				exec_check = do_exec(arg);
-				cmd_list.pop_front();
-			}	
+
+			cmd_line.clear();
 			
 		}		
 
