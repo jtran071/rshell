@@ -1,0 +1,313 @@
+Script started on Sun 17 May 2015 11:27:22 PM PDT
+~
+jtran071@hammer $ cs100
+[0;91m
+===============================================================================
+|                                                                             |
+| You have enabled settings specific for cs100.  Everything you do is being   |
+| recorded to measure your progress in the class.                             |
+|                                                                             |
+| Important commands for the class:                                           |
+|   * calcgrade.sh          displays a detailed breakdown of your grade       |
+|   * checksyscalls.sh      is your cpp file doing proper error checking?     |
+|   * typespeed             practice typing unix commands                     |
+|                                                                             |
+| Important commands for general C++ programming:                             |
+|   * make                  don't call g++ manually; let make do the work!    |
+|   * gdb                   the GNU debugger                                  |
+|   * valgrind              get rid of your memory leaks                      |
+|   * cppcheck              static analysis tool                              |
+|   * man                   find help about any syscall / terminal command    |
+|                                                                             |
+===============================================================================
+[0m
+[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~[0;95m [0;36m$[0m cd rshe[Kell
+[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~/rshell[0;95m (redirect) [0;36m$[0m ls[K[Kmake
+mkdir bin
+g++ -Wall -Werror -pedantic -std=c++11 src/rshell.cpp -o bin/rshell
+g++ -Wall -Werror -pedantic -std=c++11 src/ls.cpp -o bin/ls
+g++ -Wall -Werror -pedantic -std=c++11 src/cp.cpp -o bin/cp
+[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~/rshell[0;95m (redirect) [0;36m$[0m binr[K/rshell 
+jtran071@hammer.cs.ucr.edu$ #starting testing of redire      input     u redir
+jtran071@hammer.cs.ucr.edu$ ls
+bin  LICENSE.md  Makefile  README.md  src  tests
+jtran071@hammer.cs.ucr.edu$ ls > redir     test
+jtran071@hammer.cs.ucr.edu$ ls
+bin  LICENSE.md  Makefile  README.md  src  test  tests
+jtran071@hammer.cs.ucr.edu$ cat < test
+bin
+LICENSE.md
+Makefile
+README.md
+src
+test
+tests
+jtran071@hammer.cs.ucr.edu$ #input and output redir works
+jtran071@hammer.cs.ucr.edu$ #testing p output addp   ppend
+jtran071@hammer.cs.ucr.edu$ ls -a >> test
+jtran071@hammer.cs.ucr.edu$ cat t < test
+bin
+LICENSE.md
+Makefile
+README.md
+src
+test
+tests
+.
+..
+bin
+.git
+LICENSE.md
+Makefile
+README.md
+src
+test
+tests
+jtran071@hammer.cs.ucr.edu$ #output append works
+jtran071@hammer.cs.ucr.edu$ #testing input redir of nonexistant file
+jtran071@hammer.cs.ucr.edu$ ca  ls
+bin  LICENSE.md  Makefile  README.md  src  test  tests
+jtran071@hammer.cs.ucr.edu$ cat < heh   lololol
+open: No such file or directory
+jtran071@hammer.cs.ucr.edu$ #testing regular > again
+jtran071@hammer.cs.ucr.edu$ ls
+bin  LICENSE.md  Makefile  README.md  src  test  tests
+jtran071@hammer.cs.ucr.edu$ cat test
+bin
+LICENSE.md
+Makefile
+README.md
+src
+test
+tests
+.
+..
+bin
+.git
+LICENSE.md
+Makefile
+README.md
+src
+test
+tests
+jtran071@hammer.cs.ucr.edu$ ls Makefile > test
+jtran071@hammer.cs.ucr.edu$ cat test
+Makefile
+jtran071@hammer.cs.ucr.edu$ #cleared and replaced test with new output
+jtran071@hammer.cs.ucr.edu$ ls tests                      >                  test
+jtran071@hammer.cs.ucr.edu$ cat test
+exec.script
+ls.script
+piping.script
+jtran071@hammer.cs.ucr.edu$ cat                <               test
+exec.script
+ls.script
+piping.script
+jtran071@hammer.cs.ucr.edu$ cat<test
+exec.script
+ls.script
+piping.script
+jtran071@hammer.cs.ucr.edu$ ls bin>test
+jtran071@hammer.cs.ucr.edu$ cat<test
+cp
+ls
+rshell
+jtran071@hammer.cs.ucr.edu$ # redir works with anyk  kind of spacing
+jtran071@hammer.cs.ucr.edu$ ls >>   >>test
+jtran071@hammer.cs.ucr.edu$ cat                         <test
+cp
+ls
+rshell
+bin
+LICENSE.md
+Makefile
+README.md
+src
+test
+tests
+jtran071@hammer.cs.ucr.edu$ ls -a tests                    >>              test
+jtran071@hammer.cs.ucr.edu$ cat<                    test
+cp
+ls
+rshell
+bin
+LICENSE.md
+Makefile
+README.md
+src
+test
+tests
+.
+..
+exec.script
+ls.script
+piping.script
+jtran071@hammer.cs.ucr.edu$ #testing multiple output redir
+jtran071@hammer.cs.ucr.edu$ ls M README      MAKE   akefile>test -a>>hello
+jtran071@hammer.cs.ucr.edu$ ls
+bin  LICENSE.md  Makefile  README.md  src  test  tests
+jtran071@hammer.cs.ucr.edu$ cat test
+Makefile
+jtran071@hammer.cs.ucr.edu$ ls > out -a^[[D^[[D          -a      >> test
+jtran071@hammer.cs.ucr.edu$ cat test
+Makefile
+jtran071@hammer.cs.ucr.edu$ #multiple output redir doesnt work like that
+jtran071@hammer.cs.ucr.edu$ ls
+bin  LICENSE.md  Makefile  out	README.md  src	test  tests
+jtran071@hammer.cs.ucr.edu$ ls te     cat out
+bin
+LICENSE.md
+Makefile
+out
+README.md
+src
+test
+tests
+jtran071@hammer.cs.ucr.edu$ cat test
+Makefile
+jtran071@hammer.cs.ucr.edu$ cat                                    <                      out
+bin
+LICENSE.md
+Makefile
+out
+README.md
+src
+test
+tests
+jtran071@hammer.cs.ucr.edu$ ls test>>hello
+jtran071@hammer.cs.ucr.edu$ ls
+bin  hello  LICENSE.md	Makefile  out  README.md  src  test  tests
+jtran071@hammer.cs.ucr.edu$ cat hello
+test
+jtran071@hammer.cs.ucr.edu$ #piping is not working
+jtran071@hammer.cs.ucr.edu$ ls } -a | yep
+Error: Invalid connector.
+jtran071@hammer.cs.ucr.edu$ #tea  reats it as a syntax error
+jtran071@hammer.cs.ucr.edu$ #now testing specific file descriptor out redirect
+jtran071@hammer.cs.ucr.edu$ ls
+bin  hello  LICENSE.md	Makefile  out  README.md  src  test  tests
+jtran071@hammer.cs.ucr.edu$ #cleaning files first
+jtran071@hammer.cs.ucr.edu$ rm r hello
+jtran071@hammer.cs.ucr.edu$ rm out
+jtran071@hammer.cs.ucr.edu$ rm test
+jtran071@hammer.cs.ucr.edu$ #now testing
+jtran071@hammer.cs.ucr.edu$ ls 
+bin  LICENSE.md  Makefile  README.md  src  tests
+jtran071@hammer.cs.ucr.edu$ ls 1> fd
+jtran071@hammer.cs.ucr.edu$ ls
+bin  fd  LICENSE.md  Makefile  README.md  src  tests
+jtran071@hammer.cs.ucr.edu$ cat f <fd
+bin
+fd
+LICENSE.md
+Makefile
+README.md
+src
+tests
+jtran071@hammer.cs.ucr.edu$ ls tests 1>>                       fd
+jtran071@hammer.cs.ucr.edu$ cat<fd
+bin
+fd
+LICENSE.md
+Makefile
+README.md
+src
+tests
+exec.script
+ls.script
+piping.script
+jtran071@hammer.cs.ucr.edu$ ls -a                    1>> pi
+jtran071@hammer.cs.ucr.edu$ ls  cat pi
+.
+..
+bin
+fd
+.git
+LICENSE.md
+Makefile
+pi
+README.md
+src
+tests
+jtran071@hammer.cs.ucr.edu$ ls
+bin  fd  LICENSE.md  Makefile  pi  README.md  src  tests
+jtran071@hammer.cs.ucr.edu$ ls       2>        err
+bin  err  fd  LICENSE.md  Makefile  pi	README.md  src	tests
+jtran071@hammer.cs.ucr.edu$ cat err
+jtran071@hammer.cs.ucr.edu$ ls              2>> errr
+bin  err  errr	fd  LICENSE.md	Makefile  pi  README.md  src  tests
+jtran071@hammer.cs.ucr.edu$ l2>>er  no
+jtran071@hammer.cs.ucr.edu$ cat no
+execvp: No such file or directory
+jtran071@hammer.cs.ucr.edu$ asd 2>yes
+jtran071@hammer.cs.ucr.edu$ cat yes
+execvp: No such file or directory
+jtran071@hammer.cs.ucr.edu$ dsa      2>>yes
+jtran071@hammer.cs.ucr.edu$ cat yes
+execvp: No such file or directory
+execvp: No such file or directory
+jtran071@hammer.cs.ucr.edu$ ls
+bin  err  errr	fd  LICENSE.md	Makefile  no  pi  README.md  src  tests  yes
+jtran071@hammer.cs.ucr.edu$ sdasd 2>>             lol
+jtran071@hammer.cs.ucr.edu$ cat < lol
+execvp: No such file or directory
+jtran071@hammer.cs.ucr.edu$ #st  redirect to stderr works and stdout works
+jtran071@hammer.cs.ucr.edu$ dsa  2>>lol
+jtran071@hammer.cs.ucr.edu$ cat lol
+execvp: No such file or directory
+execvp: No such file or directory
+jtran071@hammer.cs.ucr.edu$ dwq2>lol
+jtran071@hammer.cs.ucr.edu$ cat lol
+execvp: No such file or directory
+jtran071@hammer.cs.ucr.edu$ #however there is a bug when using 1 or 2 as the name file when using the output to specific file di ec scriptors
+jtran071@hammer.cs.ucr.edu$ ls
+bin  err  errr	fd  LICENSE.md	lol  Makefile  no  pi  README.md  src  tests  yes
+jtran071@hammer.cs.ucr.edu$ ls > hel2lo
+jtran071@hammer.cs.ucr.edu$ l cat hel2lo
+bin
+err
+errr
+fd
+hel2lo
+LICENSE.md
+lol
+Makefile
+no
+pi
+README.md
+src
+tests
+yes
+jtran071@hammer.cs.ucr.edu$ ls 2 1> hel2lo
+jtran071@hammer.cs.ucr.edu$ ls
+bin  err  errr	fd  hel  hel2lo  LICENSE.md  lol  Makefile  no	pi  README.md  src  tests  yes
+jtran071@hammer.cs.ucr.edu$ #created hel instead
+jtran071@hammer.cs.ucr.edu$ cat hel
+bin
+err
+errr
+fd
+hel
+hel2lo
+LICENSE.md
+lol
+Makefile
+no
+pi
+README.md
+src
+tests
+yes
+jtran071@hammer.cs.ucr.edu$ #it will also seg     crash if you name   u  use a file name with      starting with a   1 or 2
+jtran071@hammer.cs.ucr.edu$ #furthermore the redirects will have an error if you dont use a fi   ny filename
+jtran071@hammer.cs.ucr.edu$ #cat >
+jtran071@hammer.cs.ucr.edu$ #that will c have an error
+jtran071@hammer.cs.ucr.edu$ #finished ste   tst  esting
+jtran071@hammer.cs.ucr.edu$ exit
+[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~/rshell[0;95m (redirect) [0;36m$[0m exit
+exit
+~
+jtran071@hammer $ exit
+exit
+
+Script done on Sun 17 May 2015 11:49:55 PM PDT
