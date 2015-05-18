@@ -230,7 +230,7 @@ int in_redir(vector< vector<string> > &v, int i)
 				exit(1);
 			}
 		}
-		if(-1 == dup2(oldfd,1))
+		if(-1 == dup2(oldfd,0))
 		{
 			perror("dup2");
 			exit(1);
@@ -359,7 +359,7 @@ vector< vector<string> > parse_redir(string &str, vector<int> &v)
 	}
 	vector< vector<string> > vvtok;
 	vector<string> vtemp;
-	char_separator<char> delim2(" \t");
+	char_separator<char> delim2(" \t\n");
 	for(unsigned i = 0; i < vtok.size(); ++i)
 	{
 		vtemp.clear();
