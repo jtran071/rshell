@@ -18,7 +18,8 @@ const int IN_RD = 1;
 const int OUT_RD = 2;
 const int OUT_RDA = 3;
 const int PIPE = 4;
-
+const int ERR_RD = 5;
+const int ERR_RDA = 6;
 
 void convert_vector(vector< vector<string> > &v, vector<char*> &arg, int i)
 {
@@ -65,7 +66,7 @@ int out_redir(vector< vector<string> > &v, int i)
 		}
 		int	status;
 		int pid = fork();
-		if(-1 == pid)
+		if(pid < 0)
 		{
 			perror("fork");
 			_exit(1);
@@ -87,6 +88,78 @@ int out_redir(vector< vector<string> > &v, int i)
 			}
 		}
 		if(-1 == dup2(oldfd,1))
+		{
+			perror("dup2");
+			exit(1);
+		}
+		if(-1 == close(newfd))
+		{
+			perror("close");
+			exit(1);
+		}
+	}
+	return flag+1;
+}
+
+int stderr_redir(vector< vector<string> > &v, int i)
+{
+	int flag = 1;
+	unsigned temp = i;
+	int oldfd, newfd;
+
+	if(temp >= v.size())
+	{
+		cout << "Error in syntax" << endl;
+		return -1;
+	}
+	else
+	{
+		string d_file = v[i+1][0];
+		
+		vector<char*> argv(v[i].size() +1);
+		convert_vector(v, argv, i);
+		
+
+		if(-1 == (oldfd = dup(2)))
+		{
+			perror("dup");
+			_exit(1);
+		}
+		if(-1 == (newfd = open(d_file.c_str(), O_WRONLY | O_CREAT | O_TRUNC,
+					S_IRUSR | S_IWUSR)))
+		{
+			perror("open");
+			return flag;
+		}
+		if(-1 == dup2(newfd,2))
+		{
+			perror("dup2");
+			_exit(1);
+		}
+		int	status;
+		int pid = fork();
+		if(pid < 0)
+		{
+			perror("fork");
+			_exit(1);
+		}
+		else if(0 == pid)
+		{
+			if(-1 == execvp(v[i][0].c_str(), argv.data()))
+			{
+				perror("execvp");
+				_exit(1);
+			}
+		}
+		else if( pid > 0)
+		{
+			if(-1 == waitpid(-1, &status, 0))
+			{
+				perror("waitpid");
+				exit(1);
+			}
+		}
+		if(-1 == dup2(oldfd,2))
 		{
 			perror("dup2");
 			exit(1);
@@ -137,7 +210,7 @@ int out_append_redir(vector< vector<string> > &v, int i)
 		}
 		int	status;
 		int pid = fork();
-		if(-1 == pid)
+		if(pid < 0)
 		{
 			perror("fork");
 			_exit(1);
@@ -159,6 +232,78 @@ int out_append_redir(vector< vector<string> > &v, int i)
 			}
 		}
 		if(-1 == dup2(oldfd,1))
+		{
+			perror("dup2");
+			exit(1);
+		}
+		if(-1 == close(newfd))
+		{
+			perror("close");
+			exit(1);
+		}
+	}
+	return flag+1;
+}
+
+int stderr_append_redir(vector< vector<string> > &v, int i)
+{
+	int flag = 1;
+	unsigned temp = i;
+	int oldfd, newfd;
+
+	if(temp >= v.size())
+	{
+		cout << "Error in syntax" << endl;
+		return -1;
+	}
+	else
+	{
+		string d_file = v[i+1][0];
+		
+		vector<char*> argv(v[i].size() +1);
+		convert_vector(v, argv, i);
+		
+
+		if(-1 == (oldfd = dup(2)))
+		{
+			perror("dup");
+			_exit(1);
+		}
+		if(-1 == (newfd = open(d_file.c_str(), O_WRONLY | O_CREAT | O_APPEND,
+					S_IRUSR | S_IWUSR)))
+		{
+			perror("open");
+			return flag;
+		}
+		if(-1 == dup2(newfd,2))
+		{
+			perror("dup2");
+			_exit(1);
+		}
+		int	status;
+		int pid = fork();
+		if(pid < 0)
+		{
+			perror("fork");
+			_exit(1);
+		}
+		else if(0 == pid)
+		{
+			if(-1 == execvp(v[i][0].c_str(), argv.data()))
+			{
+				perror("execvp");
+				_exit(1);
+			}
+		}
+		else if( pid > 0)
+		{
+			if(-1 == waitpid(-1, &status, 0))
+			{
+				perror("waitpid");
+				exit(1);
+			}
+		}
+		if(-1 == dup2(oldfd,2))
 		{
 			perror("dup2");
 			exit(1);
@@ -209,7 +354,7 @@ int in_redir(vector< vector<string> > &v, int i)
 		}
 		int	status;
 		int pid = fork();
-		if(-1 == pid)
+		if(pid < 0)
 		{
 			perror("fork");
 			_exit(1);
@@ -326,6 +471,8 @@ bool check_connectors(bool status, list<string> &list)
 
 vector< vector<string> > parse_redir(string &str, vector<int> &v)
 {
+	bool fd_redir = false;
+
 	for(unsigned i = 0; i < str.size(); ++i)
 	{
 		if(str[i] == '|')
@@ -344,18 +491,68 @@ vector< vector<string> > parse_redir(string &str, vector<int> &v)
 				v.push_back(OUT_RD);
 			}
 		}
+		else if(str[i] == '1')
+		{
+			if(str[i+1] == '>')
+			{
+				++i;
+				if(str[i+1] == '>')
+				{
+					++i;
+					v.push_back(OUT_RDA);
+				}
+				else
+				{
+					v.push_back(OUT_RD);
+				}
+			}
+		}
+		else if(str[i] == '2')
+		{
+			if(str[i+1] == '>')
+			{
+				++i;
+				if(str[i+1] == '>')
+				{
+					++i;
+					v.push_back(ERR_RDA);
+				}
+				else
+				{
+					v.push_back(ERR_RD);
+				}
+			}
+		}
 		else if(str[i] == '<')
 		{
 			v.push_back(IN_RD);
 		}
+		if(str.find("1>") != string::npos || str.find("1>>") != string::npos
+			|| str.find("2>") != string::npos || str.find("2>>") != string::npos)
+		{
+			fd_redir = true;
+		}
+			
 	}
 
 	vector<string> vtok;
-	char_separator<char> delim("|><");
-	tokenizer< char_separator<char> > mytok(str, delim);
-	for(auto it = mytok.begin(); it != mytok.end(); ++it)
+	if(fd_redir == true)
 	{
-		vtok.push_back(*it);
+		char_separator<char> delim("|><21");
+		tokenizer< char_separator<char> > mytok(str, delim);
+		for(auto it = mytok.begin(); it != mytok.end(); ++it)
+		{
+			vtok.push_back(*it);
+		}
+	}
+	else if (fd_redir == false)
+	{	
+		char_separator<char> delim("|><");
+		tokenizer< char_separator<char> > mytok(str, delim);
+		for(auto it = mytok.begin(); it != mytok.end(); ++it)
+		{
+			vtok.push_back(*it);
+		}
 	}
 	vector< vector<string> > vvtok;
 	vector<string> vtemp;
@@ -428,6 +625,33 @@ void do_redir(vector< vector<string> > &v, vector<int> &u)
 				continue;
 			}
 		}
+		if(curr == ERR_RD)
+		{
+			int x = stderr_redir(v,i);
+			if(x == -1)
+			{
+				return;
+			}
+			else
+			{
+				i = x + i;
+				continue;
+			}
+		}
+		if(curr == ERR_RDA)
+		{
+			int x = stderr_append_redir(v,i);
+			if(x == -1)
+			{
+				return;
+			}
+			else
+			{
+				i = x + i;
+				continue;
+			}
+		}
+
 	}
 }
 
@@ -481,7 +705,7 @@ int main()
 		{
 			redir_check = true;
 		}
-		if(input_cmd.find('|') != string::npos)
+		if(input_cmd.find('|') != string::npos && input_cmd.find("||") == string::npos)
 		{
 			redir_check = true;
 		}
