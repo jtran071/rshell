@@ -29,6 +29,8 @@ rshell now includes functional redirection operators: `<`, `>`, `>>`
 The input redirection, `<`, takes in an input from a file.
 The output redirection, `>`, takes the output, erases the contents of the file,
 and saves the output to the file. While, `>>`, takes the output and appends it the end of the file.
+To output to stderr use `2>` to to clear then write to the file or `2>>` to append.
+Same goes for stdout except use `1>` or `1>>`.
 
 ##Bugs, Limitations and Issues
 
@@ -38,6 +40,19 @@ Although this implementation is able to use many bash commands such as
 Using `echo` with `&`, `|`, `;` will output a whitespace. 
 
 Unable to use connectors with redirection operators.
+
+Redirection does not wait for file input if none is specified at
+the command line. For example: `cat <` will seg fault.
+
+When using `1>`, `1>>`, `2>`, and `2>>` you cannot use `1` or `2` anywhere
+in the file name. rshell currently treats 1 and 2, when using the mentioned
+redirection commands, as string delimiters. There is also a seg fault
+issue if you try to use a file with `1` or `2` as the first
+character of the file name. However, it is fine to use `1` or `2` when using
+the redirection commands without specifying the file descriptors. 
+
+Piping command `|` is not currently implemented.
+Redirect command `<<<` not implemented.
 
 This implementation is also not set up for the inclusion of parenthesis
 used in the command line.
