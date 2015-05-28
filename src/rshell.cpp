@@ -683,16 +683,23 @@ int main()
 		perror("getlogin()");
 	}
 	
+	char* cwd = getcwd(buf, 1024);
+	if(cwd == NULL)
+	{
+		perror("getcwd()");
+	}
 
-
-	char* cwd = NULL;
 	char* cd_save = NULL;
 	char* cd_prev = NULL;	
 	set_cd_prev(cd_prev);
-	cout << "init: " << cd_prev << endl;
 	
-
-
+	char* home = getenv("HOME");
+	if(home == NULL)
+	{
+		perror("getenv()");
+	}
+	string home_str(home);
+	
 	while(1)
 	{
 		string input_cmd;
@@ -700,9 +707,12 @@ int main()
 		bool exec_check = false;
 		bool redir_check = false;
 
+		string cwd_str(cwd);
+		size_t pos = cwd_str.find(home_str);
+		cwd_str = cwd_str.substr(pos + home_str.length());
 
 		//outputs user login and host name along with command prompt
-		cout << login_info << "@" << hostname << "$ ";
+		cout << login_info << "@" << hostname << ":~" << cwd_str << " $ ";
 		
 		//takes in commands
 		getline(cin, input_cmd);
@@ -832,6 +842,17 @@ int main()
 				}
 				cd_save = cd_prev;
 				cd_prev = cd_saveb;	
+				
+				cwd = getcwd(buf, 1024);
+				if(NULL == cwd)
+				{
+					perror("getcwd()");
+				}
+				if(-1 == setenv("PWD", cwd, 1))
+				{
+					perror("setenv()");
+				}
+				set_cd_prev(cd_prev);
 
 
 			}
