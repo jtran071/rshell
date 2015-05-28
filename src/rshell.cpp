@@ -670,6 +670,8 @@ int main()
 {
 	char hostname[256];
 	char *login_info;
+	char buf[1024];
+
 	if(gethostname(hostname, 256) == -1)
 	{
 		perror("hostname()");
@@ -681,17 +683,20 @@ int main()
 		perror("getlogin()");
 	}
 	
-	char* cd_new = NULL;
+
+
+	char* cwd = NULL;
+	char* cd_save = NULL;
 	char* cd_prev = NULL;	
 	set_cd_prev(cd_prev);
+	cout << "init: " << cd_prev << endl;
 	
+
+
 	while(1)
 	{
 		string input_cmd;
 		list<string> parse_list;
-		//bool conn_semi_c = false;
-		//bool conn_and = false;
-		//bool conn_or = false;
 		bool exec_check = false;
 		bool redir_check = false;
 
@@ -728,16 +733,12 @@ int main()
 		vector<int> v_redir;		
 		vector<string> cmd_line;
 		vector<char*> arg(parse_list.size() + 1);
-		//list<string> cmd_list;
-		//list<string> conn_list;
 
 		string exit_flag = parse_list.front();
 		
 		vector< vector<string> > cmd_vec;
 		cmd_vec = parse_redir(input_cmd, v_redir);
 		
-		//char* cd_prev = NULL;	
-		//set_cd_prev(cd_prev);
 
 		//make it so that anything after exit will still exit
 		//
@@ -750,22 +751,20 @@ int main()
 
 		while(!(parse_list.empty()))
 		{	
-			//set cd -
-			//set_cd_prev(cd_prev);
-
 			//comments
 			if(parse_list.front() == "#")
 			{
-				//cmd_list.clear();
-				//exec_check = do_exec(arg);
 				break;
-				
 			}
 			//cd to home
 			else if(parse_list.front() == "cd" && !(parse_list.size() >= 2))
 			{
+				
 				set_cd_prev(cd_prev);
-
+				cd_save = cd_prev;
+				
+				
+				//
 				const char *cd_home = getenv("HOME");
 				if(cd_home == NULL)
 				{
@@ -775,10 +774,19 @@ int main()
 				{
 					perror("chdir()");
 				}
-				
-				cd_new = cd_home;
-				//set_cd_prev(cd_prev);
-				//cd_prev = cd_home;
+				//
+
+				cwd = getcwd(buf,1024);
+				if(NULL == cwd)
+				{
+					perror("getcwd()");
+				}
+
+				if(-1 == setenv("PWD", cwd, 1))
+				{
+					perror("setenv()");
+				}
+				set_cd_prev(cd_prev);
 
 
 			}
@@ -790,32 +798,45 @@ int main()
 				parse_list.pop_front();
 
 				set_cd_prev(cd_prev);
+				cd_save = cd_prev;
 
+				//
 				const char *cd_path = parse_list.front().c_str();	
 				if(-1 == chdir(cd_path))
 				{
 					perror("chdir()");
 				}
-				
-				cd_new = cd_path;
-				//set_cd_prev(cd_prev);
-				//cd_prev = cd_home;
+				//
 
+				cwd = getcwd(buf,1024);
+				if(NULL == cwd)
+				{
+					perror("getcwd()");
+				}
+
+				if(-1 == setenv("PWD", cwd, 1))
+				{
+					perror("setenv()");
+				}
+				set_cd_prev(cd_prev);
 				
 			}
+			//cd prev
 			else if(parse_list.front() == "cd" && input_cmd.find("-") != string::npos)
 			{
-				cd_new = cd_prev;
-				
-				if(-1 == chdir(cd_prev))
+				char* cd_saveb = cd_save;
+
+				if(-1 == chdir(cd_save))
 				{
 					perror("chdir()");
 				}
-				cd_prev = cd_new;
+				cd_save = cd_prev;
+				cd_prev = cd_saveb;	
+
+
 			}
 			
 			
-			//do_redir(cmd_vec, v_redir);		
 			
 			//push only the commands, saving connectors in list
 			while(!parse_list.empty() && parse_list.front() != "&"
