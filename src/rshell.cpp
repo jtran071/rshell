@@ -655,6 +655,16 @@ void do_redir(vector< vector<string> > &v, vector<int> &u)
 	}
 }
 
+void set_cd_prev(char* &cd_prev)
+{	
+	//set prev pwd
+	cd_prev = getenv("PWD");
+	if(cd_prev == NULL)
+	{
+		perror("getenv()");
+	}
+}
+
 
 int main()
 {
@@ -670,6 +680,11 @@ int main()
 	{
 		perror("getlogin()");
 	}
+	
+	char* cd_new = NULL;
+	char* cd_prev = NULL;	
+	set_cd_prev(cd_prev);
+	
 	while(1)
 	{
 		string input_cmd;
@@ -719,11 +734,11 @@ int main()
 		string exit_flag = parse_list.front();
 		
 		vector< vector<string> > cmd_vec;
-
-		
 		cmd_vec = parse_redir(input_cmd, v_redir);
 		
-		
+		//char* cd_prev = NULL;	
+		//set_cd_prev(cd_prev);
+
 		//make it so that anything after exit will still exit
 		//
 		//if exit entered, exit shell
@@ -731,18 +746,72 @@ int main()
 		{
 			exit(0);
 		}	
-		
 
-		
+
 		while(!(parse_list.empty()))
-		{
-			
+		{	
+			//set cd -
+			//set_cd_prev(cd_prev);
+
+			//comments
 			if(parse_list.front() == "#")
 			{
 				//cmd_list.clear();
 				//exec_check = do_exec(arg);
 				break;
 				
+			}
+			//cd to home
+			else if(parse_list.front() == "cd" && !(parse_list.size() >= 2))
+			{
+				set_cd_prev(cd_prev);
+
+				const char *cd_home = getenv("HOME");
+				if(cd_home == NULL)
+				{
+					perror("getenv()");
+				}
+				if(-1 == chdir(cd_home))
+				{
+					perror("chdir()");
+				}
+				
+				cd_new = cd_home;
+				//set_cd_prev(cd_prev);
+				//cd_prev = cd_home;
+
+
+			}
+			//cd to path
+			else if(parse_list.front() == "cd" && parse_list.size() >= 2 
+					&& input_cmd.find("-") == string::npos)
+			{
+				cmd_line.push_back(parse_list.front());
+				parse_list.pop_front();
+
+				set_cd_prev(cd_prev);
+
+				const char *cd_path = parse_list.front().c_str();	
+				if(-1 == chdir(cd_path))
+				{
+					perror("chdir()");
+				}
+				
+				cd_new = cd_path;
+				//set_cd_prev(cd_prev);
+				//cd_prev = cd_home;
+
+				
+			}
+			else if(parse_list.front() == "cd" && input_cmd.find("-") != string::npos)
+			{
+				cd_new = cd_prev;
+				
+				if(-1 == chdir(cd_prev))
+				{
+					perror("chdir()");
+				}
+				cd_prev = cd_new;
 			}
 			
 			
@@ -769,7 +838,8 @@ int main()
 			{
 				do_redir(cmd_vec, v_redir);
 			}
-			else{
+			else if(cmd_line.front() != "cd")
+			{
 
 				for(unsigned int i = 0; i != cmd_line.size(); ++i)  
 				{
