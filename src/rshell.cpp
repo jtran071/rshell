@@ -11,6 +11,7 @@
 #include <list>
 #include <fcntl.h>
 #include <signal.h>
+#include <stack>
 
 using namespace std;
 using namespace boost;
@@ -23,6 +24,7 @@ const int ERR_RD = 5;
 const int ERR_RDA = 6;
 
 int pid = 0;
+stack<int> my_child;
 
 void convert_vector(vector< vector<string> > &v, vector<char*> &arg, int i)
 {
@@ -418,7 +420,7 @@ bool do_exec(vector<char*> &arg)
 	//parent process
 	else if(pid > 0)
 	{
-		if(-1 == waitpid(-1, &status, 0))
+		if(-1 == waitpid(-1, &status, WUNTRACED))
 		{
 			perror("waitpid()");
 			exit(1);
@@ -672,17 +674,44 @@ void C_handle(int x)
 {
 	if(x == SIGINT)
 	{
-		if(pid == 0)
+		cout << endl;
+		if(pid != 0)
 		{
-			pid = getpid() + 1;
+			//pid = getpid() + 1;
+		//}
+			if(-1 == kill(pid, x))
+			{
+				perror("kill(): ^C");
+			}
 		}
-		if(-1 == kill(pid, x))
+		pid = 0;
+	}
+}
+
+void Z_handle(int x)
+{
+	if(x == SIGTSTP)
+	{
+		cout << endl;
+		if(pid != 0)
 		{
-			perror("kill()");
+			//pid = getpid() + 1;
+		//}
+			if(-1 == kill(pid, x))
+			{
+				perror("kill(): ^Z");
+				//return;
+			}
+				
+			else
+			{
+				cout << "\nProcess stopped " << endl;
+				//return;
+			}
+			my_child.push(pid);
 		}
 	}
 }
-	
 
 
 void sig_C()
@@ -696,10 +725,22 @@ void sig_C()
 	}
 }
 
+void sig_Z()
+{
+	struct sigaction sigZ;
+	sigZ.sa_handler = &Z_handle;
+	sigZ.sa_flags = SA_RESTART;
+	if(sigaction(SIGTSTP, &sigZ, NULL) < 0)
+	{
+		perror("sigaction(): SIGTSTP");
+	}
+}
+
 int main()
 {
 	//signals
 	sig_C();
+	sig_Z();
 
 	char hostname[256];
 	char *login_info;
@@ -905,6 +946,29 @@ int main()
 				set_cd_prev(cd_prev);
 
 
+			}
+			//fg
+			else if(parse_list.front() == "fg")
+			{
+				int status;
+				if(!(my_child.empty()))
+				{
+					if(-1 == kill(my_child.top(), SIGCONT))
+					{
+						perror("kill(): SIGCONT");
+					}
+					if(!(my_child.empty()))
+					{
+						my_child.pop();
+					}
+				}
+				wait(&status);
+				if(my_child.empty())
+				{
+					cout << "Error: no such job running" << endl;
+					break;
+				}
+				break;
 			}
 			
 			
