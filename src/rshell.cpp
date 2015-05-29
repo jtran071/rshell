@@ -10,6 +10,7 @@
 #include <boost/tokenizer.hpp>
 #include <list>
 #include <fcntl.h>
+#include <signal.h>
 
 using namespace std;
 using namespace boost;
@@ -699,7 +700,8 @@ int main()
 		perror("getenv()");
 	}
 	string home_str(home);
-	
+
+
 	while(1)
 	{
 		string input_cmd;
@@ -707,12 +709,20 @@ int main()
 		bool exec_check = false;
 		bool redir_check = false;
 
-		string cwd_str(cwd);
-		size_t pos = cwd_str.find(home_str);
-		cwd_str = cwd_str.substr(pos + home_str.length());
 
-		//outputs user login and host name along with command prompt
-		cout << login_info << "@" << hostname << ":~" << cwd_str << " $ ";
+		//taking out home folder from prompt
+		string cwd_str(cwd);
+		if(home != NULL && cwd_str.find(home_str) != string::npos)
+		{
+			size_t pos = cwd_str.find(home_str);
+			cwd_str = cwd_str.substr(pos + home_str.length());
+			cout << login_info << "@" << hostname << ":~" << cwd_str << " $ ";
+		}
+		else
+		{
+			//outputs user login and host name along with command prompt
+			cout << login_info << "@" << hostname << ":" << cwd << " $ ";
+		}
 		
 		//takes in commands
 		getline(cin, input_cmd);
@@ -810,6 +820,8 @@ int main()
 				set_cd_prev(cd_prev);
 				cd_save = cd_prev;
 
+				
+
 				//
 				const char *cd_path = parse_list.front().c_str();	
 				if(-1 == chdir(cd_path))
@@ -831,8 +843,9 @@ int main()
 				set_cd_prev(cd_prev);
 				
 			}
-			//cd prev
-			else if(parse_list.front() == "cd" && input_cmd.find("-") != string::npos)
+			//cd to previous
+			else if(parse_list.front() == "cd" 
+					&& input_cmd.find("-") != string::npos)
 			{
 				char* cd_saveb = cd_save;
 
