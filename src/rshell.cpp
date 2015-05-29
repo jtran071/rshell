@@ -22,6 +22,8 @@ const int PIPE = 4;
 const int ERR_RD = 5;
 const int ERR_RDA = 6;
 
+int pid = 0;
+
 void convert_vector(vector< vector<string> > &v, vector<char*> &arg, int i)
 {
 	for(unsigned j = 0; j < v[i].size(); ++j)
@@ -66,7 +68,7 @@ int out_redir(vector< vector<string> > &v, int i)
 			_exit(1);
 		}
 		int	status;
-		int pid = fork();
+		pid = fork();
 		if(pid < 0)
 		{
 			perror("fork");
@@ -138,7 +140,7 @@ int stderr_redir(vector< vector<string> > &v, int i)
 			_exit(1);
 		}
 		int	status;
-		int pid = fork();
+		pid = fork();
 		if(pid < 0)
 		{
 			perror("fork");
@@ -210,7 +212,7 @@ int out_append_redir(vector< vector<string> > &v, int i)
 			_exit(1);
 		}
 		int	status;
-		int pid = fork();
+		pid = fork();
 		if(pid < 0)
 		{
 			perror("fork");
@@ -282,7 +284,7 @@ int stderr_append_redir(vector< vector<string> > &v, int i)
 			_exit(1);
 		}
 		int	status;
-		int pid = fork();
+		pid = fork();
 		if(pid < 0)
 		{
 			perror("fork");
@@ -354,7 +356,7 @@ int in_redir(vector< vector<string> > &v, int i)
 			_exit(1);
 		}
 		int	status;
-		int pid = fork();
+		pid = fork();
 		if(pid < 0)
 		{
 			perror("fork");
@@ -396,7 +398,7 @@ int in_redir(vector< vector<string> > &v, int i)
 bool do_exec(vector<char*> &arg)
 {
 	int status;
-	int pid = fork();
+	pid = fork();
 	//error with fork
 	if(pid < 0)
 	{
@@ -666,9 +668,39 @@ void set_cd_prev(char* &cd_prev)
 	}
 }
 
+void C_handle(int x)
+{
+	if(x == SIGINT)
+	{
+		if(pid == 0)
+		{
+			pid = getpid() + 1;
+		}
+		if(-1 == kill(pid, x))
+		{
+			perror("kill()");
+		}
+	}
+}
+	
+
+
+void sig_C()
+{
+	struct sigaction sigC;
+	sigC.sa_handler = &C_handle; 	
+	sigC.sa_flags = SA_RESTART;
+	if(sigaction(SIGINT, &sigC, NULL) < 0)
+	{
+		perror("sigaction(): SIGINT");
+	}
+}
 
 int main()
 {
+	//signals
+	sig_C();
+
 	char hostname[256];
 	char *login_info;
 	char buf[1024];
@@ -692,8 +724,13 @@ int main()
 
 	char* cd_save = NULL;
 	char* cd_prev = NULL;	
+	if(-1 == setenv("PWD", cwd, 1))
+	{
+		perror("setenv()");
+	}
 	set_cd_prev(cd_prev);
-	
+	cd_save = cd_prev;
+
 	char* home = getenv("HOME");
 	if(home == NULL)
 	{
