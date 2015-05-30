@@ -1,0 +1,252 @@
+Script started on Fri 29 May 2015 11:30:54 PM PDT
+~
+jtran071@hammer $ cs100
+[0;91m
+===============================================================================
+|                                                                             |
+| You have enabled settings specific for cs100.  Everything you do is being   |
+| recorded to measure your progress in the class.                             |
+|                                                                             |
+| Important commands for the class:                                           |
+|   * calcgrade.sh          displays a detailed breakdown of your grade       |
+|   * checksyscalls.sh      is your cpp file doing proper error checking?     |
+|   * typespeed             practice typing unix commands                     |
+|                                                                             |
+| Important commands for general C++ programming:                             |
+|   * make                  don't call g++ manually; let make do the work!    |
+|   * gdb                   the GNU debugger                                  |
+|   * valgrind              get rid of your memory leaks                      |
+|   * cppcheck              static analysis tool                              |
+|   * man                   find help about any syscall / terminal command    |
+|                                                                             |
+===============================================================================
+[0m
+[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~[0;95m [0;36m$[0m cd rshell
+[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~/rshell[0;95m (signals) [0;36m$[0m make
+g++ -Wall -Werror -pedantic -std=c++11 src/rshell.cpp -o bin/rshell
+g++ -Wall -Werror -pedantic -std=c++11 src/ls.cpp -o bin/ls
+g++ -Wall -Werror -pedantic -std=c++11 src/cp.cpp -o bin/cp
+[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~/rshell[0;95m (signals) [0;36m$[0m bin/rshell 
+jtran071@hammer.cs.ucr.edu:~/rshell $ #you can see the wo  directory in prompt
+jtran071@hammer.cs.ucr.edu:~/rshell $ #home is replaced with ~
+jtran071@hammer.cs.ucr.edu:~/rshell $ #if i leave home...
+jtran071@hammer.cs.ucr.edu:~/rshell $ cd ..
+jtran071@hammer.cs.ucr.edu:~ $ cd..
+execvp(): No such file or directory
+jtran071@hammer.cs.ucr.edu:~ $ cd ..
+jtran071@hammer.cs.ucr.edu:/class/classes $ #shows regular directory tree
+jtran071@hammer.cs.ucr.edu:/class/classes $ ls
+ls: cannot open directory .: Permission denied
+jtran071@hammer.cs.ucr.edu:/class/classes $ cd jtran071
+jtran071@hammer.cs.ucr.edu:~ $ ls
+cs100_labs  cs100_quiz	firstrepo  jtran071  rshell  rshell-2  tutor  ucr-cs100
+jtran071@hammer.cs.ucr.edu:~ $ cd rshell
+jtran071@hammer.cs.ucr.edu:~/rshell $ #as you can see rshell is working
+jtran071@hammer.cs.ucr.edu:~/rshell $ cd
+jtran071@hammer.cs.ucr.edu:~ $ #now in m in home directory
+jtran071@hammer.cs.ucr.edu:~ $ cd rshell/src
+jtran071@hammer.cs.ucr.edu:~/rshell/src $ ls
+cp.cpp	hw0.cpp  ls.cpp  mv.cpp  rm.cpp  rshell.cpp  testshell.cpp  Timer.h
+jtran071@hammer.cs.ucr.edu:~/rshell/src $ cd
+jtran071@hammer.cs.ucr.edu:~ $ cd -
+jtran071@hammer.cs.ucr.edu:~/rshell/src $ cd -
+jtran071@hammer.cs.ucr.edu:~ $ cd -
+jtran071@hammer.cs.ucr.edu:~/rshell/src $ cd -
+jtran071@hammer.cs.ucr.edu:~ $ cd                                  -        
+jtran071@hammer.cs.ucr.edu:~/rshell/src $                        cd                         -
+jtran071@hammer.cs.ucr.edu:~ $ cd                     rshell                
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls
+a.out  bin  fg_bg_test	hi  LICENSE.md	Makefile  README.md  src  test.cpp  tests
+jtran071@hammer.cs.ucr.edu:~/rshell $                     cd                    r src 
+jtran071@hammer.cs.ucr.edu:~/rshell/src $                               cd
+jtran071@hammer.cs.ucr.edu:~ $ cd -
+jtran071@hammer.cs.ucr.edu:~/rshell/src $ cd -
+jtran071@hammer.cs.ucr.edu:~ $ #cd is working
+jtran071@hammer.cs.ucr.edu:~ $ cd  ls
+cs100_labs  cs100_quiz	firstrepo  jtran071  rshell  rshell-2  tutor  ucr-cs100
+jtran071@hammer.cs.ucr.edu:~ $ cd rshell
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls
+a.out  bin  fg_bg_test	hi  LICENSE.md	Makefile  README.md  src  test.cpp  tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ cd bal  a lah
+chdir(): No such file or directory
+jtran071@hammer.cs.ucr.edu:~/rshell $ cd
+jtran071@hammer.cs.ucr.edu:~ $ cd                                      cd              rhsel    shell/src          
+jtran071@hammer.cs.ucr.edu:~/rshell/src $ cd ..
+jtran071@hammer.cs.ucr.edu:~/rshell $ cd                                       cd               ..
+jtran071@hammer.cs.ucr.edu:~ $ ls
+cs100_labs  cs100_quiz	firstrepo  jtran071  rshell  rshell-2  tutor  ucr-cs100
+jtran071@hammer.cs.ucr.edu:~ $ cd rshell
+jtran071@hammer.cs.ucr.edu:~/rshell $ #now testing signals
+jtran071@hammer.cs.ucr.edu:~/rshell $ ^C
+kill(): ^C: No such process
+^C
+^C
+
+jtran071@hammer.cs.ucr.edu:~/rshell $ ^C
+^C
+
+jtran071@hammer.cs.ucr.edu:~/rshell $ #^C will display an error if ran after an executre  ed proram
+jtran071@hammer.cs.ucr.edu:~/rshell $ #^C doesnt exit rshell
+jtran071@hammer.cs.ucr.edu:~/rshell $ ^C
+^C
+
+jtran071@hammer.cs.ucr.edu:~/rshell $ fg_bg_test
+testing
+testing
+testing
+testing
+^C
+jtran071@hammer.cs.ucr.edu:~/rshell $ ps
+  PID TTY          TIME CMD
+ 3983 pts/35   00:00:00 bash
+ 4044 pts/35   00:00:00 rshell
+ 4438 pts/35   00:00:00 ps
+jtran071@hammer.cs.ucr.edu:~/rshell $ #the running program is killed
+jtran071@hammer.cs.ucr.edu:~/rshell $ cat
+ls
+ls
+hi
+hi
+^C
+jtran071@hammer.cs.ucr.edu:~/rshell $ ps
+  PID TTY          TIME CMD
+ 3983 pts/35   00:00:00 bash
+ 4044 pts/35   00:00:00 rshell
+ 4456 pts/35   00:00:00 ps
+jtran071@hammer.cs.ucr.edu:~/rshell $ #cat is killed
+jtran071@hammer.cs.ucr.edu:~/rshell $ #^C is working
+jtran071@hammer.cs.ucr.edu:~/rshell $ #code for the test program is here
+jtran071@hammer.cs.ucr.edu:~/rshell $ cat test.cpp
+#include <iostream>
+#include <unistd.h>
+
+using namespace std;
+
+
+int main()
+{
+	while(1)
+	{
+		cout << "testing" << endl;
+		sleep(1);
+	}
+	return 0;
+}
+jtran071@hammer.cs.ucr.edu:~/rshell $ #now testing ^Z and fg and bg
+jtran071@hammer.cs.ucr.edu:~/rshell $ fg_bg_test
+testing
+testing
+testing
+testing
+testing
+testing
+^Z
+
+Process stopped 
+jtran071@hammer.cs.ucr.edu:~/rshell $ ps
+  PID TTY          TIME CMD
+ 3983 pts/35   00:00:00 bash
+ 4044 pts/35   00:00:00 rshell
+ 4529 pts/35   00:00:00 fg_bg_test
+ 4532 pts/35   00:00:00 ps
+jtran071@hammer.cs.ucr.edu:~/rshell $ #the program is sust pended
+jtran071@hammer.cs.ucr.edu:~/rshell $ fg  ^Z
+kill(): ^Z: No such process
+^Z
+kill(): ^Z: No such process
+^Z
+kill(): ^Z: No such process
+
+jtran071@hammer.cs.ucr.edu:~/rshell $ fg
+kill(): SIGCONT: No such process
+waitpid(): No child processes
+jtran071@hammer.cs.ucr.edu:~/rshell $ ps
+  PID TTY          TIME CMD
+ 3983 pts/35   00:00:00 bash
+ 4044 pts/35   00:00:00 rshell
+ 4529 pts/35   00:00:00 fg_bg_test
+ 5624 pts/35   00:00:00 ps
+jtran071@hammer.cs.ucr.edu:~/rshell $ fg
+kill(): SIGCONT: No such process
+waitpid(): No child processes
+jtran071@hammer.cs.ucr.edu:~/rshell $ #fg is b a bi           pg  fg_bg_test
+testing
+testing
+testing
+testing
+^Z
+
+Process stopped 
+jtran071@hammer.cs.ucr.edu:~/rshell $ ps
+  PID TTY          TIME CMD
+ 3983 pts/35   00:00:00 bash
+ 4044 pts/35   00:00:00 rshell
+ 4529 pts/35   00:00:00 fg_bg_test
+ 5719 pts/35   00:00:00 fg_bg_test
+ 5777 pts/35   00:00:00 ps
+jtran071@hammer.cs.ucr.edu:~/rshell $ fg
+waitpid(): No child processes
+testing
+jtran071@hammer.cs.ucr.edu:~/rshell $ testing
+testing
+testing
+testing
+testing
+^C
+kill(): ^C: No such process
+
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls  ps
+jtran071@hammer.cs.ucr.edu:~/rshell $   PID TTY          TIME CMD
+ 3983 pts/35   00:00:00 bash
+ 4044 pts/35   00:00:00 rshell
+ 4529 pts/35   00:00:00 fg_bg_test
+ 5820 pts/35   00:00:00 ps
+
+jtran071@hammer.cs.ucr.edu:~/rshell $ #the second fg_bg_test is brought back to foreground and killed with ^C
+jtran071@hammer.cs.ucr.edu:~/rshell $ #fg is a bit buf ggy st till with stin  din  , stderr, and stdout
+jtran071@hammer.cs.ucr.edu:~/rshell $ fg_bg_test
+jtran071@hammer.cs.ucr.edu:~/rshell $ testing
+testing
+testing
+testing
+^Z
+
+Process stopped 
+
+jtran071@hammer.cs.ucr.edu:~/rshell $ bg
+testing
+execvp(): No such file or directory
+jtran071@hammer.cs.ucr.edu:~/rshell $ testing
+testing
+testing
+testing
+testing
+testing
+testing
+testing
+ls
+a.out  bin  fg_bg_test	hi  LICENSE.md	Makefile  README.md  src  test.cpp  tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ testing
+testing
+testing
+ls testing
+-atesting
+
+.  ..  a.out  bin  fg_bg_test  .git  hi  LICENSE.md  Makefile  README.md  src  test.cpp  tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ testing
+testing
+^C
+kill(): ^C: No such process
+
+jtran071@hammer.cs.ucr.edu:~/rshell $ E #bg sent the program to the   run in the background
+jtran071@hammer.cs.ucr.edu:~/rshell $ #then killed with ^C
+jtran071@hammer.cs.ucr.edu:~/rshell $ #fg and bg work but are w still a bit buggy
+jtran071@hammer.cs.ucr.edu:~/rshell $ #finished testing
+jtran071@hammer.cs.ucr.edu:~/rshell $ exit
+[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~/rshell[0;95m (signals) [0;36m$[0m exit
+exit
+~
+jtran071@hammer $ exit
+exit
+
+Script done on Fri 29 May 2015 11:39:27 PM PDT
