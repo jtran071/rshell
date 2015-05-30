@@ -25,6 +25,7 @@ const int ERR_RDA = 6;
 
 int pid = 0;
 stack<int> my_child;
+//int pid_child = 0;
 
 void convert_vector(vector< vector<string> > &v, vector<char*> &arg, int i)
 {
@@ -951,6 +952,7 @@ int main()
 			else if(parse_list.front() == "fg")
 			{
 				int status;
+				
 				if(!(my_child.empty()))
 				{
 					if(-1 == kill(my_child.top(), SIGCONT))
@@ -962,8 +964,11 @@ int main()
 						my_child.pop();
 					}
 				}
-				wait(&status);
-				if(my_child.empty())
+				if(-1 == waitpid(pid, &status, WUNTRACED) && !(my_child.empty()) )
+				{
+					perror("waitpid()");
+				}
+				else if(my_child.empty())
 				{
 					cout << "Error: no such job running" << endl;
 					break;
@@ -971,6 +976,22 @@ int main()
 				break;
 			}
 			
+			//bg
+			else if(parse_list.front() == "bg")
+			{
+				if(!(my_child.empty()))
+				{
+					if(-1 == kill(my_child.top(), SIGCONT))
+					{
+						perror("kill(): SIGCONT");
+					}
+				}
+				else if(my_child.empty())
+				{
+					cout << "Error: no such job running" << endl;
+					break;
+				}
+			}
 			
 			
 			//push only the commands, saving connectors in list
