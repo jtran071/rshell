@@ -41,8 +41,12 @@ working directory to the directory you specified.
 
 `cd -` will change to the previous directory you were in.
 
-rshell is now able to take the `^C` signal.
-This will kill the current foreground job, returning to rshell.
+rshell is now able to take the `^C` signal and the `^Z` signal.
+`^C` will kill the current foreground job, returning to rshell.
+`^Z` will suspend the current foreground job, sending it to the background then returning to rshell.
+With the inclusion of `^Z`, `fg` and `bg` are also implemented.
+`fg` will bring the suspended job to the foreground.
+`bg` will send the suspended job to the background.
 
 ##Bugs, Limitations and Issues
 
@@ -69,7 +73,16 @@ Redirect command `<<<` not implemented.
 This implementation is also not set up for the inclusion of parenthesis
 used in the command line.
 
-Using the `^C` signal without any running foreground jobs will display an error instead of being silent.
+The `cd` command to home does not work with connectors if it precedes a connector.
+`fg` and `bg` will not work with connectors if it precedes a connector and will output and error
+if used after a connector.
+Using `fg` twice in succession will cause an error, killing the second process without bringing it to
+the foreground. If there are any other process suspended, it may be left running.
+
+Using `^C` after executing another command will cause `kill` to output an error saying that no process is running.
+
+`^Z` may display error messages after using `fg` and `bg`
+`fg` and `bg` are still very buggy. It messes up stdin, stderr, and stdout.
 
 Able to run instances of rshell within itself.
 
@@ -110,6 +123,8 @@ with `.` files displayed first.
 
 ##Known Issues and Bugs with `ls`
 When using the `-R` flag, there may be some permission denied errors.
+Use of `-R` and `-a` together displays repeats of directories.
+
 The display may not output as neat as it should if long file names or large numbers are displayed. 
 When taking flags, it does not output an error when a flag does not exist,
 it will simply do regular ls. 
