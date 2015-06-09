@@ -50,22 +50,22 @@ With the inclusion of `^Z`, `fg` and `bg` are also implemented.
 
 ##Bugs, Limitations and Issues
 
-Although this implementation is able to use many bash commands such as 
-`ls`, `echo`, `cat`, and `touch`, it is unable to use the `cd` command.
+When using `||`, if previous command succeeded, using connectors after will not execute the next command.
 
 Using `echo` with `&`, `|`, `;` will output a whitespace. 
 
 Unable to use connectors with redirection operators.
 
 Redirection does not wait for file input if none is specified at
-the command line. For example: `cat <` will seg fault.
+the command line. 
+For example: `cat <` will seg fault.
 
 When using `1>`, `1>>`, `2>`, and `2>>` you cannot use `1` or `2` anywhere
 in the file name. rshell currently treats 1 and 2, when using the mentioned
-redirection commands, as string delimiters. There is also a seg fault
-issue if you try to use a file with `1` or `2` as the first
-character of the file name. However, it is fine to use `1` or `2` when using
-the redirection commands without specifying the file descriptors. 
+redirection commands, as string delimiters. 
+There is also a seg fault issue if you try to use a file with `1` or `2` as the first
+character of the file name. 
+However, it is fine to use `1` or `2` when using the redirection commands without specifying the file descriptors. 
 
 Piping command `|` is not currently implemented.
 Redirect command `<<<` not implemented.

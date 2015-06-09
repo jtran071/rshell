@@ -1,4 +1,4 @@
-Script started on Sun 19 Apr 2015 11:18:20 PM PDT
+Script started on Tue 09 Jun 2015 03:54:06 AM PDT
 ~
 jtran071@hammer $ cs100
 [0;91m
@@ -9,6 +9,7 @@ jtran071@hammer $ cs100
 |                                                                             |
 | Important commands for the class:                                           |
 |   * calcgrade.sh          displays a detailed breakdown of your grade       |
+|   * checksyscalls.sh      is your cpp file doing proper error checking?     |
 |   * typespeed             practice typing unix commands                     |
 |                                                                             |
 | Important commands for general C++ programming:                             |
@@ -20,201 +21,297 @@ jtran071@hammer $ cs100
 |                                                                             |
 ===============================================================================
 [0m
-[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~[0;95m [0;36m$[0m cd rshell/
-[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~/rshell[0;95m (exec) [0;36m$[0m ls
-LICENSE.md  Makefile  README.md  src  tests
-[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~/rshell[0;95m (exec) [0;36m$[0m make
-mkdir bin
+[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~[0;95m [0;36m$[0m cd rshell
+[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~/rshell[0;95m (master) [0;36m$[0m make
 g++ -Wall -Werror -pedantic -std=c++11 src/rshell.cpp -o bin/rshell
-[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~/rshell[0;95m (exec) [0;36m$[0m i[Kbin/rshell 
-jtran071@hammer.cs.ucr.edu$ #starting test
-jtran071@hammer.cs.ucr.edu$ ls
-bin  LICENSE.md  Makefile  README.md  src  tests
-jtran071@hammer.cs.ucr.edu$ ls -a
-.  ..  bin  .git  LICENSE.md  Makefile	README.md  src	tests
-jtran071@hammer.cs.ucr.edu$ ls -a -l
-total 36
-drwx------  6 jtran071 classes 4096 Apr 19 23:12 .
-drwx------ 11 jtran071 classes 4096 Apr 19 23:12 ..
-drwx------  2 jtran071 classes 4096 Apr 19 23:12 bin
-drwx------  8 jtran071 classes 4096 Apr 19 22:42 .git
+g++ -Wall -Werror -pedantic -std=c++11 src/ls.cpp -o bin/ls
+g++ -Wall -Werror -pedantic -std=c++11 src/cp.cpp -o bin/cp
+[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~/rshell[0;95m (master) [0;36m$[0m bin/rshell 
+jtran071@hammer.cs.ucr.edu:~/rshell $ #gt  tesi ting hw0 portion
+jtran071@hammer.cs.ucr.edu:~/rshell $ #testing         shows command prompt, login and d host
+jtran071@hammer.cs.ucr.edu:~/rshell $ #testing commands
+jtran071@hammer.cs.ucr.edu:~/rshell $ s ls
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls -a
+.  ..  bin  exec.script  .git  LICENSE.md  Makefile  README.md	src  tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls -a -l
+total 40
+drwx------  6 jtran071 classes 4096 Jun  9 03:46 .
+drwx------ 13 jtran071 classes 4096 Jun  9 03:35 ..
+drwx------  2 jtran071 classes 4096 Jun  9 03:47 bin
+-rw-------  1 jtran071 classes    0 Jun  9 03:46 exec.script
+drwx------  8 jtran071 classes 4096 Jun  9 03:22 .git
 -rw-------  1 jtran071 classes 1472 Apr 18 14:55 LICENSE.md
--rw-------  1 jtran071 classes  155 Apr 19 02:46 Makefile
--rw-------  1 jtran071 classes 1040 Apr 19 22:42 README.md
-drwx------  2 jtran071 classes 4096 Apr 19 22:36 src
-drwx------  2 jtran071 classes 4096 Apr 19 23:12 tests
-jtran071@hammer.cs.ucr.edu$ lr s -R
-.:
-bin  LICENSE.md  Makefile  README.md  src  tests
-
-./bin:
-rshell
-
-./src:
-rshell.cpp
-
-./tests:
-exec.script
-jtran071@hammer.cs.ucr.edu$ #ls command with flags work
-jtran071@hammer.cs.ucr.edu$ cd stc  rc
+-rw-------  1 jtran071 classes  251 May 11 15:17 Makefile
+-rw-------  1 jtran071 classes 5248 Jun  5 21:37 README.md
+drwx------  2 jtran071 classes 4096 Jun  9 03:35 src
+drwx------  2 jtran071 classes 4096 Jun  5 21:37 tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls               -a                   -a
+.  ..  bin  exec.script  .git  LICENSE.md  Makefile  README.md	src  tests
+jtran071@hammer.cs.ucr.edu:~/rshell $                  ls                -a                                               -l
+total 40
+drwx------  6 jtran071 classes 4096 Jun  9 03:46 .
+drwx------ 13 jtran071 classes 4096 Jun  9 03:35 ..
+drwx------  2 jtran071 classes 4096 Jun  9 03:47 bin
+-rw-------  1 jtran071 classes    0 Jun  9 03:46 exec.script
+drwx------  8 jtran071 classes 4096 Jun  9 03:22 .git
+-rw-------  1 jtran071 classes 1472 Apr 18 14:55 LICENSE.md
+-rw-------  1 jtran071 classes  251 May 11 15:17 Makefile
+-rw-------  1 jtran071 classes 5248 Jun  5 21:37 README.md
+drwx------  2 jtran071 classes 4096 Jun  9 03:35 src
+drwx------  2 jtran071 classes 4096 Jun  5 21:37 tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ asd
 execvp(): No such file or directory
-jtran071@hammer.cs.ucr.edu$ #cd doesnt wo    'wr  t work
-jtran071@hammer.cs.ucr.edu$ ls #-a -l
-bin  LICENSE.md  Makefile  README.md  src  tests
-jtran071@hammer.cs.ucr.edu$ #ls lsal
-jtran071@hammer.cs.ucr.edu$ #of  comments work
-jtran071@hammer.cs.ucr.edu$ #lets see the other commands
-jtran071@hammer.cs.ucr.edu$ # ps
+jtran071@hammer.cs.ucr.edu:~/rshell $ echo hi hi hi hi hi hibye bye bye bye bye bye hi hi hi hi hi bye bye byeb ye bye byeb yeb yeb ey bye               bye                    bye                                            hi
+hi hi hi hi hi hibye bye bye bye bye bye hi hi hi hi hi bye bye byeb ye bye byeb yeb yeb ey bye bye bye hi
+jtran071@hammer.cs.ucr.edu:~/rshell $ #opening o another instance of rshell
+jtran071@hammer.cs.ucr.edu:~/rshell $ bin/rshell
+jtran071@hammer.cs.ucr.edu:~/rshell $ ps
   PID TTY          TIME CMD
- 5059 pts/46   00:00:00 bash
- 5116 pts/46   00:00:00 rshell
- 5404 pts/46   00:00:00 ps
-jtran071@hammer.cs.ucr.edu$ tuo  ouch test
-jtran071@hammer.cs.ucr.edu$ ls
-bin  LICENSE.md  Makefile  README.md  src  test  tests
-jtran071@hammer.cs.ucr.edu$ ls -l test
--rw------- 1 jtran071 classes 0 Apr 19 23:14 test
-jtran071@hammer.cs.ucr.edu$ rm test
-jtran071@hammer.cs.ucr.edu$ ls
-bin  LICENSE.md  Makefile  README.md  src  tests
-jtran071@hammer.cs.ucr.edu$ #other commands working
-jtran071@hammer.cs.ucr.edu$ bin/sr  rshell
-jtran071@hammer.cs.ucr.edu$ ps
-  PID TTY          TIME CMD
- 5059 pts/46   00:00:00 bash
- 5116 pts/46   00:00:00 rshell
- 5646 pts/46   00:00:00 rshell
- 5655 pts/46   00:00:00 ps
-jtran071@hammer.cs.ucr.edu$ #able to open instance of rshell within rshell
-jtran071@hammer.cs.ucr.edu$ bin/rshell
-jtran071@hammer.cs.ucr.edu$ ps
-  PID TTY          TIME CMD
- 5059 pts/46   00:00:00 bash
- 5116 pts/46   00:00:00 rshell
- 5646 pts/46   00:00:00 rshell
- 5752 pts/46   00:00:00 rshell
- 5765 pts/46   00:00:00 ps
-jtran071@hammer.cs.ucr.edu$ exit
-jtran071@hammer.cs.ucr.edu$ ps
-  PID TTY          TIME CMD
- 5059 pts/46   00:00:00 bash
- 5116 pts/46   00:00:00 rshell
- 5646 pts/46   00:00:00 rshell
- 5785 pts/46   00:00:00 ps
-jtran071@hammer.cs.ucr.edu$ #exit works
-jtran071@hammer.cs.ucr.edu$ exit jdsoadjoawdwua
-jtran071@hammer.cs.ucr.edu$ ps
-  PID TTY          TIME CMD
- 5059 pts/46   00:00:00 bash
- 5116 pts/46   00:00:00 rshell
- 5809 pts/46   00:00:00 ps
-jtran071@hammer.cs.ucr.edu$ #exit works as long as                        exitjdisoajdowa
+17113 pts/29   00:00:00 bash
+17140 pts/29   00:00:00 rshell
+17259 pts/29   00:00:00 rshell
+17260 pts/29   00:00:00 ps
+jtran071@hammer.cs.ucr.edu:~/rshell $ #two rshle  ells are now running
+jtran071@hammer.cs.ucr.edu:~/rshell $ asd
 execvp(): No such file or directory
-jtran071@hammer.cs.ucr.edu$ #exit works as long as its the first ar  command
-jtran071@hammer.cs.ucr.edu$ #testing connectors
-jtran071@hammer.cs.ucr.edu$ ls && cat README.md             echo ls  hi
-bin  LICENSE.md  Makefile  README.md  src  tests
-jtran071@hammer.cs.ucr.edu$ echo hi
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls -a
+.  ..  bin  exec.script  .git  LICENSE.md  Makefile  README.md	src  tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls                -a                       -l
+total 40
+drwx------  6 jtran071 classes 4096 Jun  9 03:46 .
+drwx------ 13 jtran071 classes 4096 Jun  9 03:35 ..
+drwx------  2 jtran071 classes 4096 Jun  9 03:47 bin
+-rw-------  1 jtran071 classes    0 Jun  9 03:46 exec.script
+drwx------  8 jtran071 classes 4096 Jun  9 03:22 .git
+-rw-------  1 jtran071 classes 1472 Apr 18 14:55 LICENSE.md
+-rw-------  1 jtran071 classes  251 May 11 15:17 Makefile
+-rw-------  1 jtran071 classes 5248 Jun  5 21:37 README.md
+drwx------  2 jtran071 classes 4096 Jun  9 03:35 src
+drwx------  2 jtran071 classes 4096 Jun  5 21:37 tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ #testing exit
+jtran071@hammer.cs.ucr.edu:~/rshell $ exit
+jtran071@hammer.cs.ucr.edu:~/rshell $ ps
+  PID TTY          TIME CMD
+17113 pts/29   00:00:00 bash
+17140 pts/29   00:00:00 rshell
+17411 pts/29   00:00:00 ps
+jtran071@hammer.cs.ucr.edu:~/rshell $ #second instance of rshell ended
+jtran071@hammer.cs.ucr.edu:~/rshell $ #tet sting more with exit
+jtran071@hammer.cs.ucr.edu:~/rshell $ bn in/rshell
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls -l exit
+ls: cannot access exit: No such file or directory
+jtran071@hammer.cs.ucr.edu:~/rshell $ ei xit 0 0a    -a hi
+jtran071@hammer.cs.ucr.edu:~/rshell $ ps
+  PID TTY          TIME CMD
+17113 pts/29   00:00:00 bash
+17140 pts/29   00:00:00 rshell
+17520 pts/29   00:00:00 ps
+jtran071@hammer.cs.ucr.edu:~/rshell $ #exited
+jtran071@hammer.cs.ucr.edu:~/rshell $ bin/rshell
+jtran071@hammer.cs.ucr.edu:~/rshell $ ps
+  PID TTY          TIME CMD
+17113 pts/29   00:00:00 bash
+17140 pts/29   00:00:00 rshell
+17522 pts/29   00:00:00 rshell
+17525 pts/29   00:00:00 ps
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls -l; exit
+total 28
+drwx------ 2 jtran071 classes 4096 Jun  9 03:47 bin
+-rw------- 1 jtran071 classes    0 Jun  9 03:46 exec.script
+-rw------- 1 jtran071 classes 1472 Apr 18 14:55 LICENSE.md
+-rw------- 1 jtran071 classes  251 May 11 15:17 Makefile
+-rw------- 1 jtran071 classes 5248 Jun  5 21:37 README.md
+drwx------ 2 jtran071 classes 4096 Jun  9 03:35 src
+drwx------ 2 jtran071 classes 4096 Jun  5 21:37 tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ps
+  PID TTY          TIME CMD
+17113 pts/29   00:00:00 bash
+17140 pts/29   00:00:00 rshell
+17531 pts/29   00:00:00 ps
+jtran071@hammer.cs.ucr.edu:~/rshell $ #exited with connector
+jtran071@hammer.cs.ucr.edu:~/rshell $ bin/rshell
+jtran071@hammer.cs.ucr.edu:~/rshell $ ps
+  PID TTY          TIME CMD
+17113 pts/29   00:00:00 bash
+17140 pts/29   00:00:00 rshell
+17555 pts/29   00:00:00 rshell
+17556 pts/29   00:00:00 ps
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls -l && exit
+total 28
+drwx------ 2 jtran071 classes 4096 Jun  9 03:47 bin
+-rw------- 1 jtran071 classes    0 Jun  9 03:46 exec.script
+-rw------- 1 jtran071 classes 1472 Apr 18 14:55 LICENSE.md
+-rw------- 1 jtran071 classes  251 May 11 15:17 Makefile
+-rw------- 1 jtran071 classes 5248 Jun  5 21:37 README.md
+drwx------ 2 jtran071 classes 4096 Jun  9 03:35 src
+drwx------ 2 jtran071 classes 4096 Jun  5 21:37 tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ps
+  PID TTY          TIME CMD
+17113 pts/29   00:00:00 bash
+17140 pts/29   00:00:00 rshell
+17625 pts/29   00:00:00 ps
+jtran071@hammer.cs.ucr.edu:~/rshell $ ^[[A^[[A        bin/rshell
+jtran071@hammer.cs.ucr.edu:~/rshell $ ps
+  PID TTY          TIME CMD
+17113 pts/29   00:00:00 bash
+17140 pts/29   00:00:00 rshell
+17666 pts/29   00:00:00 rshell
+17667 pts/29   00:00:00 ps
+jtran071@hammer.cs.ucr.edu:~/rshell $ asdsa|| e                       exit
+execvp(): No such file or directory
+jtran071@hammer.cs.ucr.edu:~/rshell $ ps
+  PID TTY          TIME CMD
+17113 pts/29   00:00:00 bash
+17140 pts/29   00:00:00 rshell
+17670 pts/29   00:00:00 ps
+jtran071@hammer.cs.ucr.edu:~/rshell $ #exited wit  h o ||
+jtran071@hammer.cs.ucr.edu:~/rshell $ #comments are working
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls -l  #-a hi ls           
+total 28
+drwx------ 2 jtran071 classes 4096 Jun  9 03:47 bin
+-rw------- 1 jtran071 classes    0 Jun  9 03:46 exec.script
+-rw------- 1 jtran071 classes 1472 Apr 18 14:55 LICENSE.md
+-rw------- 1 jtran071 classes  251 May 11 15:17 Makefile
+-rw------- 1 jtran071 classes 5248 Jun  5 21:37 README.md
+drwx------ 2 jtran071 classes 4096 Jun  9 03:35 src
+drwx------ 2 jtran071 classes 4096 Jun  5 21:37 tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls # -s   l -a              -R
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls -l# this is  comment
+total 28
+drwx------ 2 jtran071 classes 4096 Jun  9 03:47 bin
+-rw------- 1 jtran071 classes    0 Jun  9 03:46 exec.script
+-rw------- 1 jtran071 classes 1472 Apr 18 14:55 LICENSE.md
+-rw------- 1 jtran071 classes  251 May 11 15:17 Makefile
+-rw------- 1 jtran071 classes 5248 Jun  5 21:37 README.md
+drwx------ 2 jtran071 classes 4096 Jun  9 03:35 src
+drwx------ 2 jtran071 classes 4096 Jun  5 21:37 tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls -l#-adsahudshaidhwiadhweildhfweif la
+total 28
+drwx------ 2 jtran071 classes 4096 Jun  9 03:47 bin
+-rw------- 1 jtran071 classes    0 Jun  9 03:46 exec.script
+-rw------- 1 jtran071 classes 1472 Apr 18 14:55 LICENSE.md
+-rw------- 1 jtran071 classes  251 May 11 15:17 Makefile
+-rw------- 1 jtran071 classes 5248 Jun  5 21:37 README.md
+drwx------ 2 jtran071 classes 4096 Jun  9 03:35 src
+drwx------ 2 jtran071 classes 4096 Jun  5 21:37 tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls -a#-l
+.  ..  bin  exec.script  .git  LICENSE.md  Makefile  README.md	src  tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ l # s
+execvp(): No such file or directory
+jtran071@hammer.cs.ucr.edu:~/rshell $ #now testing connectors
+jtran071@hammer.cs.ucr.edu:~/rshell $ ks  ls;ls
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls             ;                           ls
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls && ls
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls  asdsa && ls
+execvp(): No such file or directory
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls || ls
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ dsada || ls
+execvp(): No such file or directory
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls-  -l||cat   echo hihihihi
+total 28
+drwx------ 2 jtran071 classes 4096 Jun  9 03:47 bin
+-rw------- 1 jtran071 classes    0 Jun  9 03:46 exec.script
+-rw------- 1 jtran071 classes 1472 Apr 18 14:55 LICENSE.md
+-rw------- 1 jtran071 classes  251 May 11 15:17 Makefile
+-rw------- 1 jtran071 classes 5248 Jun  5 21:37 README.md
+drwx------ 2 jtran071 classes 4096 Jun  9 03:35 src
+drwx------ 2 jtran071 classes 4096 Jun  5 21:37 tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls -l&&echo hihihihi
+total 28
+drwx------ 2 jtran071 classes 4096 Jun  9 03:47 bin
+-rw------- 1 jtran071 classes    0 Jun  9 03:46 exec.script
+-rw------- 1 jtran071 classes 1472 Apr 18 14:55 LICENSE.md
+-rw------- 1 jtran071 classes  251 May 11 15:17 Makefile
+-rw------- 1 jtran071 classes 5248 Jun  5 21:37 README.md
+drwx------ 2 jtran071 classes 4096 Jun  9 03:35 src
+drwx------ 2 jtran071 classes 4096 Jun  5 21:37 tests
+hihihihi
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls;echo nodsnaudhas
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+nodsnaudhas
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls                &&                          ls
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls                      ||           ls
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls                          ||      echo hi
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ echo hi               ||          ls
 hi
-jtran071@hammer.cs.ucr.edu$ ls ||     || echo hi
+jtran071@hammer.cs.ucr.edu:~/rshell $ asdasda                 ||        echo i
 execvp(): No such file or directory
-jtran071@hammer.cs.ucr.edu$ e ls;echo hi
-bin  LICENSE.md  Makefile  README.md  src  tests
-jtran071@hammer.cs.ucr.edu$ #connectors are not working prper   operly
-jtran071@hammer.cs.ucr.edu$ #they are being r treated like comments
-jtran071@hammer.cs.ucr.edu$ #lets te        ls &&&&&SAD&&S&D&A&DE&WF&EW&|F|EW|FEW|F|EW|FW|EF; fwe;f;wef;w
-bin  LICENSE.md  Makefile  README.md  src  tests
-jtran071@hammer.cs.ucr.edu$ ls  ls ls
-ls: cannot access ls: No such file or directory
-jtran071@hammer.cs.ucr.edu$ ls sc rc
-rshell.cpp
-jtran071@hammer.cs.ucr.edu$ echo hello
-hello
-jtran071@hammer.cs.ucr.edu$ echo &&&
-
-jtran071@hammer.cs.ucr.edu$ echo ||
-
-jtran071@hammer.cs.ucr.edu$ echo ;&&\\\|*
-
-jtran071@hammer.cs.ucr.edu$ #echo is affec     afe fected by                te reats ;|&                ; lds     echo ; jdosajdoa
-
-jtran071@hammer.cs.ucr.edu$ echo dsoadhoas           test ;djdiosajdao
-test
-test
-jtran071@hammer.cs.ucr.edu$ ec  #ec   echo test ||||djsadjada
-test
-test
-jtran071@hammer.cs.ucr.edu$ echo &&&&dheuidhia
-
-jtran071@hammer.cs.ucr.edu$ #echo treats *|;     &|; as white s  space
-jtran071@hammer.cs.ucr.edu$ #but strand   ge intere ation     c  ction when outputting          an  other char are echo'd
-jtran071@hammer.cs.ucr.edu$ #echoes twice
-jtran071@hammer.cs.ucr.edu$ echo      &&& hfeif
-jtran071@hammer.cs.ucr.edu$ #echo     echo &&&hdeuihi
-
-jtran071@hammer.cs.ucr.edu$ #a treats them as comments as well
-jtran071@hammer.cs.ucr.edu$ ps
-  PID TTY          TIME CMD
- 5059 pts/46   00:00:00 bash
- 5116 pts/46   00:00:00 rshell
- 6792 pts/46   00:00:00 ps
-jtran071@hammer.cs.ucr.edu$ #testing kill
-jtran071@hammer.cs.ucr.edu$ bin/rshell
-jtran071@hammer.cs.ucr.edu$ ps
-  PID TTY          TIME CMD
- 5059 pts/46   00:00:00 bash
- 5116 pts/46   00:00:00 rshell
- 6819 pts/46   00:00:00 rshell
- 6833 pts/46   00:00:00 ps
-jtran071@hammer.cs.ucr.edu$ kill -9 6819
-jtran071@hammer.cs.ucr.edu$ ps
-  PID TTY          TIME CMD
- 5059 pts/46   00:00:00 bash
- 5116 pts/46   00:00:00 rshell
- 6923 pts/46   00:00:00 ps
-jtran071@hammer.cs.ucr.edu$ #kill works
-jtran071@hammer.cs.ucr.edu$ pwd
-wd/class/classes/jtran071/rshell
-jtran071@hammer.cs.ucr.edu$ #goi   testing more commands
+i
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls;ls         ;lsls;   ;ls;sl  ls;ls&&ls&&ls&&echo hi||echo no&& echo hi;y echo yes;ls -a&&ls-  -l
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+hi
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls;ls&&ls||echono   no
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls; ;ls||ls-  -a &&  || echo no
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls;  && ls -a || echo no
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+.  ..  bin  exec.script  .git  LICENSE.md  Makefile  README.md	src  tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls; ls-  -a; ls -l && ls ; asd || echo no && echo yes; eh cho hi
+bin  exec.script  LICENSE.md  Makefile	README.md  src	tests
+.  ..  bin  exec.script  .git  LICENSE.md  Makefile  README.md	src  tests
+total 28
+drwx------ 2 jtran071 classes 4096 Jun  9 03:47 bin
+-rw------- 1 jtran071 classes    0 Jun  9 03:46 exec.script
+-rw------- 1 jtran071 classes 1472 Apr 18 14:55 LICENSE.md
+-rw------- 1 jtran071 classes  251 May 11 15:17 Makefile
+-rw------- 1 jtran071 classes 5248 Jun  5 21:37 README.md
+drwx------ 2 jtran071 classes 4096 Jun  9 03:35 src
+drwx------ 2 jtran071 classes 4096 Jun  5 21:37 tests
+total 28
+drwx------ 2 jtran071 classes 4096 Jun  9 03:47 bin
+-rw------- 1 jtran071 classes    0 Jun  9 03:46 exec.script
+-rw------- 1 jtran071 classes 1472 Apr 18 14:55 LICENSE.md
+-rw------- 1 jtran071 classes  251 May 11 15:17 Makefile
+-rw------- 1 jtran071 classes 5248 Jun  5 21:37 README.md
+drwx------ 2 jtran071 classes 4096 Jun  9 03:35 src
+drwx------ 2 jtran071 classes 4096 Jun  5 21:37 tests
 execvp(): No such file or directory
-jtran071@hammer.cs.ucr.edu$ #testing more commands
-jtran071@hammer.cs.ucr.edu$ #strange        #strange error there
-jtran071@hammer.cs.ucr.edu$ # mkdir     ls
-bin  LICENSE.md  Makefile  README.md  src  tests
-jtran071@hammer.cs.ucr.edu$ mk dir    dir test_dir
-jtran071@hammer.cs.ucr.edu$ ls
-bin  LICENSE.md  Makefile  README.md  src  test_dir  tests
-jtran071@hammer.cs.ucr.edu$ cp test_dir README.md
-cp: omitting directory `test_dir'
-jtran071@hammer.cs.ucr.edu$ ls
-bin  LICENSE.md  Makefile  README.md  src  test_dir  tests
-jtran071@hammer.cs.ucr.edu$ ls test_dir
-jtran071@hammer.cs.ucr.edu$ rmdir test_dir
-jtran071@hammer.cs.ucr.edu$ ls
-bin  LICENSE.md  Makefile  README.md  src  tests
-jtran071@hammer.cs.ucr.edu$ touch re  test
-jtran071@hammer.cs.ucr.edu$ cp Makefile test
-jtran071@hammer.cs.ucr.edu$ cat test
-CFLAGS = -Wall -Werror -pedantic -std=c++11
-
-all: rshell
-
-rshell: bin
-	g++ $(CFLAGS) src/rshell.cpp -o bin/rshell
-  
-bin:
-	mkdir bin
-  
-clean:
-	rm -rf bin
-jtran071@hammer.cs.ucr.edu$ ls
-bin  LICENSE.md  Makefile  README.md  src  test  tests
-jtran071@hammer.cs.ucr.edu$ rm test
-jtran071@hammer.cs.ucr.edu$ exit
-[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~/rshell[0;95m (exec) [0;36m$[0m exit
+no
+yes
+hi
+jtran071@hammer.cs.ucr.edu:~/rshell $ #connectors working
+jtran071@hammer.cs.ucr.edu:~/rshell $ ls -l||cat ;       echo hello        &&echo e yes h this works
+total 28
+drwx------ 2 jtran071 classes 4096 Jun  9 03:47 bin
+-rw------- 1 jtran071 classes    0 Jun  9 03:46 exec.script
+-rw------- 1 jtran071 classes 1472 Apr 18 14:55 LICENSE.md
+-rw------- 1 jtran071 classes  251 May 11 15:17 Makefile
+-rw------- 1 jtran071 classes 5248 Jun  5 21:37 README.md
+drwx------ 2 jtran071 classes 4096 Jun  9 03:35 src
+drwx------ 2 jtran071 classes 4096 Jun  5 21:37 tests
+jtran071@hammer.cs.ucr.edu:~/rshell $ #finished testing
+jtran071@hammer.cs.ucr.edu:~/rshell $ exit
+[s%%%%%%%%%%[u[0;32mjtran071[0;36m@[0;32mcs100[0;36m:[0;32m~/rshell[0;95m (master) [0;36m$[0m exit
 exit
 ~
 jtran071@hammer $ exit
 exit
 
-Script done on Sun 19 Apr 2015 11:32:11 PM PDT
+Script done on Tue 09 Jun 2015 04:09:25 AM PDT
