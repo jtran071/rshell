@@ -1,6 +1,6 @@
 # rshell
 
-This is an basic implementation of the bash shell. It is able to take in 
+This is an implementation of the bash shell. It is able to take in 
 commands through the command line and execute them.
 
 ##How to Install
